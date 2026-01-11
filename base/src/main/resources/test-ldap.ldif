@@ -1,0 +1,36 @@
+# --- Запись 1: Корень домена ---
+dn: dc=example,dc=com
+objectclass: top
+objectclass: domain
+dc: example
+
+# --- Запись 2: Организационное подразделение для пользователей ---
+dn: ou=users,dc=example,dc=com
+objectclass: top
+objectclass: organizationalUnit
+ou: users
+
+
+# --- Запись 4: Пользователь John Doe ---
+dn: uid=johndoe,ou=users,dc=example,dc=com
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: John Doe
+sn: Doe
+uid: johndoe
+mail: john.doe@example.com
+userPassword: password123
+
+# --- Запись 5: Пользователь Jane Smith ---
+dn: uid=janesmith,ou=users,dc=example,dc=com
+objectclass: top
+objectclass: person
+objectclass: organizationalPerson
+objectclass: inetOrgPerson
+cn: Jane Smith
+sn: Smith
+uid: janesmith
+mail: jane.smith@example.com
+userPassword: password456
