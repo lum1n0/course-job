@@ -38,7 +38,7 @@ class ArticleVersionService(
         val last = articleVersionRepository.findTopByArticleIdOrderByVersionDesc(article.id)
         val next = (last?.version ?: 0) + 1
         val av = ArticleVersion(
-            articleId = article.id,
+            article = article,
             version = next,
             title = article.title,
             description = article.description,
@@ -58,7 +58,7 @@ class ArticleVersionService(
         val last = articleVersionRepository.findTopByArticleIdOrderByVersionDesc(article.id)
         val next = (last?.version ?: 0) + 1
         val av = ArticleVersion(
-            articleId = article.id,
+            article= article,
             version = next,
             title = article.title,
             description = article.description,

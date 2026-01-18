@@ -9,7 +9,7 @@ class ArticleVersionMapper {
     fun toDto(av: ArticleVersion): ArticleVersionDto =
         ArticleVersionDto(
             id = av.id,
-            articleId = av.articleId,
+            articleId = av.article.id,
             version = av.version,
             title = av.title,
             description = av.description,

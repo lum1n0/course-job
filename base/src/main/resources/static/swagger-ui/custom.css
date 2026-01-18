@@ -1,0 +1,509 @@
+/* ====================================
+   Pro Znania API - Custom Swagger UI
+   Цветовая схема: #009AA3, #67767D, #E4002F, White
+   ==================================== */
+
+/* Основные стили */
+.swagger-ui {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* ========== ВЕРХНЯЯ ПАНЕЛЬ ========== */
+.swagger-ui .topbar {
+    background: linear-gradient(135deg, #009AA3 0%, #67767D 100%) !important;
+    box-shadow: 0 4px 12px rgba(0, 154, 163, 0.2);
+    animation: slideDown 0.5s ease-out;
+}
+
+.topbar-wrapper img {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* ========== ИНФОРМАЦИОННАЯ ПАНЕЛЬ ========== */
+.swagger-ui .info {
+    padding: 30px 0;
+    animation: fadeIn 0.6s ease-in;
+}
+
+.swagger-ui .info .title {
+    color: #009AA3 !important;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 154, 163, 0.1);
+}
+
+.swagger-ui .info hgroup.main {
+    margin-bottom: 20px;
+}
+
+.swagger-ui .info .base-url {
+    color: #67767D;
+    font-weight: 600;
+}
+
+.swagger-ui .info a {
+    color: #009AA3;
+    transition: all 0.3s ease;
+}
+
+.swagger-ui .info a:hover {
+    color: #E4002F;
+    transform: translateX(3px);
+}
+
+/* ========== ТЕГИ И РАЗДЕЛЫ ========== */
+.swagger-ui .opblock-tag {
+    background-color: #009AA3 !important;
+    color: white !important;
+    border-left: 5px solid #E4002F;
+    border-radius: 6px;
+    padding: 12px 20px;
+    margin: 15px 0;
+    transition: all 0.3s ease;
+    animation: slideInLeft 0.4s ease-out;
+}
+
+.swagger-ui .opblock-tag:hover {
+    background: linear-gradient(90deg, #009AA3 0%, #67767D 100%) !important;
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(0, 154, 163, 0.3);
+}
+
+.swagger-ui .opblock-tag small {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ========== БЛОКИ ОПЕРАЦИЙ (GET, POST, etc.) ========== */
+.swagger-ui .opblock {
+    border: 2px solid #e8e8e8;
+    border-radius: 8px;
+    margin: 10px 0;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.swagger-ui .opblock:hover {
+    border-color: #009AA3;
+    box-shadow: 0 6px 20px rgba(0, 154, 163, 0.15);
+    transform: translateY(-3px);
+}
+
+/* GET - Бирюзовый */
+.swagger-ui .opblock.opblock-get {
+    border-left: 5px solid #009AA3;
+    background: linear-gradient(to right, rgba(0, 154, 163, 0.05) 0%, white 100%);
+}
+
+.swagger-ui .opblock.opblock-get .opblock-summary {
+    border-color: #009AA3;
+}
+
+.swagger-ui .opblock.opblock-get .opblock-summary-method {
+    background: #009AA3;
+}
+
+/* POST - Красный */
+.swagger-ui .opblock.opblock-post {
+    border-left: 5px solid #E4002F;
+    background: linear-gradient(to right, rgba(228, 0, 47, 0.05) 0%, white 100%);
+}
+
+.swagger-ui .opblock.opblock-post .opblock-summary {
+    border-color: #E4002F;
+}
+
+.swagger-ui .opblock.opblock-post .opblock-summary-method {
+    background: #E4002F;
+}
+
+/* PUT - Серый */
+.swagger-ui .opblock.opblock-put {
+    border-left: 5px solid #67767D;
+    background: linear-gradient(to right, rgba(103, 118, 125, 0.05) 0%, white 100%);
+}
+
+.swagger-ui .opblock.opblock-put .opblock-summary {
+    border-color: #67767D;
+}
+
+.swagger-ui .opblock.opblock-put .opblock-summary-method {
+    background: #67767D;
+}
+
+/* DELETE - Темнее красный */
+.swagger-ui .opblock.opblock-delete {
+    border-left: 5px solid #c40028;
+    background: linear-gradient(to right, rgba(196, 0, 40, 0.05) 0%, white 100%);
+}
+
+.swagger-ui .opblock.opblock-delete .opblock-summary {
+    border-color: #c40028;
+}
+
+.swagger-ui .opblock.opblock-delete .opblock-summary-method {
+    background: #c40028;
+}
+
+/* Заголовок операции */
+.swagger-ui .opblock-summary {
+    background-color: white !important;
+    border-radius: 6px;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.swagger-ui .opblock-summary:hover {
+    background-color: #f8f9fa !important;
+}
+
+.swagger-ui .opblock-summary-path {
+    color: #67767D;
+    font-weight: 600;
+}
+
+/* ========== КНОПКИ ========== */
+/* Authorize */
+.swagger-ui .btn.authorize {
+    background: linear-gradient(135deg, #009AA3 0%, #007b82 100%);
+    border: 2px solid #009AA3;
+    color: white;
+    border-radius: 6px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0, 154, 163, 0.2);
+}
+
+.swagger-ui .btn.authorize:hover {
+    background: linear-gradient(135deg, #007b82 0%, #005f65 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 154, 163, 0.3);
+}
+
+.swagger-ui .btn.authorize svg {
+    fill: white;
+    animation: swing 2s ease-in-out infinite;
+}
+
+/* Execute */
+.swagger-ui .btn.execute {
+    background: linear-gradient(135deg, #E4002F 0%, #b8002a 100%);
+    border: 2px solid #E4002F;
+    color: white;
+    border-radius: 6px;
+    padding: 10px 30px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(228, 0, 47, 0.2);
+}
+
+.swagger-ui .btn.execute:hover {
+    background: linear-gradient(135deg, #b8002a 0%, #8c0020 100%);
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(228, 0, 47, 0.4);
+}
+
+/* Try it out */
+.swagger-ui .btn.try-out {
+    background: white;
+    border: 2px solid #009AA3;
+    color: #009AA3;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.swagger-ui .btn.try-out:hover {
+    background: #009AA3;
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Cancel */
+.swagger-ui .btn.cancel {
+    background: white;
+    border: 2px solid #67767D;
+    color: #67767D;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.swagger-ui .btn.cancel:hover {
+    background: #67767D;
+    color: white;
+}
+
+/* ========== ФОРМЫ ВВОДА ========== */
+.swagger-ui input[type="text"],
+.swagger-ui input[type="password"],
+.swagger-ui input[type="email"],
+.swagger-ui textarea,
+.swagger-ui select {
+    border: 2px solid #e8e8e8;
+    border-radius: 6px;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.swagger-ui input[type="text"]:focus,
+.swagger-ui input[type="password"]:focus,
+.swagger-ui input[type="email"]:focus,
+.swagger-ui textarea:focus,
+.swagger-ui select:focus {
+    border-color: #009AA3;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 154, 163, 0.1);
+    transform: scale(1.02);
+}
+
+/* ========== ТАБЛИЦЫ ПАРАМЕТРОВ ========== */
+.swagger-ui table.parameters {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.swagger-ui table.parameters thead tr th {
+    background: linear-gradient(135deg, #009AA3 0%, #67767D 100%);
+    color: white;
+    padding: 12px;
+    font-weight: 600;
+    border: none;
+}
+
+.swagger-ui table.parameters tbody tr {
+    border-bottom: 1px solid #e8e8e8;
+    transition: all 0.3s ease;
+}
+
+.swagger-ui table.parameters tbody tr:hover {
+    background-color: rgba(0, 154, 163, 0.05);
+    transform: scale(1.01);
+}
+
+.swagger-ui table.parameters tbody tr td {
+    padding: 12px;
+}
+
+.swagger-ui table.parameters tbody tr.required td:first-child {
+    border-left: 3px solid #E4002F;
+}
+
+/* ========== RESPONSES ========== */
+.swagger-ui .responses-inner {
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.swagger-ui .response-col_status {
+    color: #009AA3;
+    font-weight: 700;
+}
+
+.swagger-ui .response-col_description {
+    color: #67767D;
+}
+
+/* ========== MODELS ========== */
+.swagger-ui .model-container {
+    background: white;
+    border: 2px solid #e8e8e8;
+    border-radius: 6px;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.swagger-ui .model-container:hover {
+    border-color: #009AA3;
+    box-shadow: 0 4px 12px rgba(0, 154, 163, 0.1);
+}
+
+.swagger-ui .model-title {
+    color: #009AA3;
+    font-weight: 700;
+}
+
+/* ========== CODE BLOCKS ========== */
+.swagger-ui .highlight-code {
+    max-height: 500px;
+    overflow-y: auto;
+    border-radius: 6px;
+    border: 2px solid #e8e8e8;
+    background: #f8f9fa;
+}
+
+.swagger-ui .highlight-code::-webkit-scrollbar {
+    width: 10px;
+}
+
+.swagger-ui .highlight-code::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 6px;
+}
+
+.swagger-ui .highlight-code::-webkit-scrollbar-thumb {
+    background: #009AA3;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.swagger-ui .highlight-code::-webkit-scrollbar-thumb:hover {
+    background: #007b82;
+}
+
+/* ========== СХЕМЫ ========== */
+.swagger-ui .model-box {
+    background: white;
+    border: 2px solid #e8e8e8;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.swagger-ui .model-box:hover {
+    border-color: #009AA3;
+}
+
+.swagger-ui .prop-type {
+    color: #E4002F;
+    font-weight: 600;
+}
+
+/* ========== LOADING ========== */
+.swagger-ui .loading-container {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.swagger-ui .loading-container:after {
+    border-color: #009AA3 transparent #009AA3 transparent;
+    animation: spin 1.2s linear infinite;
+}
+
+/* ========== АНИМАЦИИ ========== */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes swing {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(10deg);
+    }
+    75% {
+        transform: rotate(-10deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Анимация при раскрытии */
+.swagger-ui .opblock-body {
+    animation: expandDown 0.3s ease-out;
+}
+
+@keyframes expandDown {
+    from {
+        opacity: 0;
+        max-height: 0;
+    }
+    to {
+        opacity: 1;
+        max-height: 1000px;
+    }
+}
+
+/* ========== ОБЩИЕ СТИЛИ ========== */
+.swagger-ui .wrapper {
+    max-width: 100% !important;
+    padding: 0 20px;
+}
+
+.swagger-ui a {
+    transition: all 0.3s ease;
+}
+
+.swagger-ui .info .title small pre {
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* Схемы авторизации */
+
+
+.swagger-ui .auth-container {
+    border: 2px solid #e8e8e8;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+/* Фильтр */
+.swagger-ui .filter-container input {
+    border: 2px solid #e8e8e8;
+    border-radius: 6px;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.swagger-ui .filter-container input:focus {
+    border-color: #009AA3;
+    box-shadow: 0 0 0 3px rgba(0, 154, 163, 0.1);
+}

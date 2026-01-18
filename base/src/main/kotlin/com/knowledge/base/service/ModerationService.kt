@@ -54,7 +54,7 @@ class ModerationService(
 
         val proposal = articleProposalRepository.save(
             ArticleProposal(
-                articleId = null,
+                article = null,
                 finalArticleId = null,
                 title = title,
                 description = description,
@@ -100,7 +100,7 @@ class ModerationService(
 
         val proposal = articleProposalRepository.save(
             ArticleProposal(
-                articleId = article.id,
+                article = article,
                 finalArticleId = null,
                 title = title,
                 description = description,
@@ -183,7 +183,7 @@ class ModerationService(
             )
             created
         } else {
-            val article = articleRepository.findById(p.articleId!!).orElseThrow { IllegalArgumentException("Статья не найдена") }
+            val article = articleRepository.findById(p.article?.id!!).orElseThrow { IllegalArgumentException("Статья не найдена") }
             val updated = article.copy(
                 title = p.title,
                 description = p.description,
@@ -291,7 +291,7 @@ class ModerationService(
 
         val proposal = articleProposalRepository.save(
             ArticleProposal(
-                articleId = null,
+                article = null,
                 finalArticleId = null,
                 title = title,
                 description = description,

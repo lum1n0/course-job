@@ -213,6 +213,12 @@ class SecurityConfig(
                     .requestMatchers("/api/articles/search").authenticated()
                     // В SecurityConfig.kt добавьте:
                     .requestMatchers(HttpMethod.POST, "/api/articles/admin/fix-image-urls").hasRole("ADMIN")
+                    .requestMatchers(
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui.html"
+                    ).permitAll()
+
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)

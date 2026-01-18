@@ -23,16 +23,14 @@ class UserService(
     private val passwordEncoder: PasswordEncoder,
     private val userMapper: UserMapper
 ) {
+
     private val logger = LoggerFactory.getLogger(UserService::class.java)
 
     fun findOrCreateShadowUser(samAccountName: String): User {
         val normalizedEmail = samAccountName.lowercase()
 
-        // 1. Находим все потенциальные дубликаты (case-insensitive)
-        // Используем фильтрацию в памяти, чтобы избежать NonUniqueResultException от БД
-        val duplicates = userRepository.findAll().filter {
-            it.email.equals(normalizedEmail, ignoreCase = true)
-        }
+        // Ищем всех дубликатов по email (игнорируя регистр)
+        val duplicates = userRepository.findAllByEmailIgnoreCase(normalizedEmail)
 
         if (duplicates.isEmpty()) {
             return createShadowUser(normalizedEmail)
@@ -43,19 +41,23 @@ class UserService(
         if (duplicates.size == 1) {
             winner = duplicates[0]
         } else {
-            // 2. Если есть дубликаты, выбираем лучшего по приоритету ролей
-            // admin > moderator > super-writer > writer > user
+            // Сортируем по приоритету ролей
             val sortedUsers = duplicates.sortedByDescending { getRolePriority(it.role.title) }
             winner = sortedUsers.first()
             val losers = sortedUsers.drop(1)
 
-            logger.warn("Merge duplicates for '$normalizedEmail'. Winner ID=${winner.id} (${winner.role.title}). Deleting ${losers.size} losers: ${losers.map { it.id }}")
+            logger.warn("Merge duplicates for '$normalizedEmail'. Winner ID=${winner.id} (${winner.role.title}). Soft-deleting ${losers.size} losers: ${losers.map { it.id }}")
 
-            // 3. Удаляем дубликаты с более низкими правами
-            userRepository.deleteAll(losers)
+            // Мягкое удаление: помечаем isDelete=true и меняем email, чтобы не мешал поиску
+            val usersToDelete = losers.map {
+                it.copy(
+                    isDelete = true,
+                    email = "${it.email}.deleted.${System.currentTimeMillis()}"
+                )
+            }
+            userRepository.saveAll(usersToDelete)
         }
 
-        // 4. Проверяем наличие базовых прав у победителя
         return ensureBaseAccessRoles(winner)
     }
 
@@ -115,20 +117,17 @@ class UserService(
             logger.info("Shadow user '{}' created from LDAP.", it.email)
         }
     }
+
     fun createUser(userDto: UserDto): UserDto {
         logger.info("Creating local user with DTO: {}", userDto)
-        // Проверка на существование ignore case
-        if (userRepository.findByEmailIgnoreCase(userDto.email) != null) {
+        if (userRepository.findAllByEmailIgnoreCase(userDto.email).isNotEmpty()) {
             throw IllegalStateException("User with email ${userDto.email} already exists.")
         }
-
         val role = roleRepository.findByTitle(userDto.roleDto.title)
             ?: throw RuntimeException("Role not found: ${userDto.roleDto.title}")
-
         val accessRoles = userDto.accessRolesDto.map {
             accessRoleRepository.findById(it.id).orElseThrow { RuntimeException("AccessRole not found: ${it.id}") }
         }.toMutableList()
-
         val user = User(
             firstName = userDto.firstName ?: "",
             lastName = userDto.lastName,
@@ -138,7 +137,6 @@ class UserService(
             accessRoles = accessRoles,
             isFromLdap = false
         )
-
         return userMapper.toDto(userRepository.save(user))
     }
 
@@ -152,17 +150,14 @@ class UserService(
             userDto.email.isNullOrBlank() -> exUser.email
             else -> userDto.email
         }
-
         if (!exUser.isFromLdap && newEmail != exUser.email) {
-            // Проверка на дубликаты ignore case
-            if (userRepository.findByEmailIgnoreCase(newEmail) != null) {
+            if (userRepository.findAllByEmailIgnoreCase(newEmail).isNotEmpty()) {
                 throw IllegalStateException("User with email $newEmail already exists.")
             }
         }
 
         val role = roleRepository.findByTitle(userDto.roleDto.title)
             ?: throw RuntimeException("Role not found: ${userDto.roleDto.title}")
-
         val accessRoles = userDto.accessRolesDto.map {
             accessRoleRepository.findById(it.id).orElseThrow { RuntimeException("AccessRole not found: ${it.id}") }
         }.toMutableList()
@@ -176,7 +171,6 @@ class UserService(
             accessRoles = accessRoles,
             isDelete = userDto.isDelete
         )
-
         return userMapper.toDto(userRepository.save(updatedUser))
     }
 
@@ -187,7 +181,11 @@ class UserService(
     }
 
     @Transactional(readOnly = true)
-    fun findByEmail(email: String): UserDto? = userRepository.findByEmailIgnoreCase(email)?.let { userMapper.toDto(it) }
+    fun findByEmail(email: String): UserDto? {
+        // Безопасный поиск, возвращающий первого пользователя, если найдено несколько
+        val users = userRepository.findAllByEmailIgnoreCase(email)
+        return if (users.isNotEmpty()) userMapper.toDto(users[0]) else null
+    }
 
     fun findByFirstName(firstName: String) =
         userRepository.findByFirstName(firstName).map { userMapper.toDto(it) }
@@ -223,7 +221,6 @@ class UserService(
         return user.map { userMapper.toDto(it) }.orElse(null)
     }
 
-    // Новый метод фильтрации
     @Transactional(readOnly = true)
     fun getUsersFiltered(
         pageable: Pageable,
@@ -232,7 +229,6 @@ class UserService(
         isFromLdap: Boolean?,
         isDelete: Boolean?
     ): Page<UserDto> {
-
         val noFilters =
             (lastName.isNullOrBlank()) &&
                     (email.isNullOrBlank()) &&

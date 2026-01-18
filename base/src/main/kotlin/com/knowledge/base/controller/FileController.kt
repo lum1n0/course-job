@@ -1,5 +1,12 @@
 package com.knowledge.base.controller
 
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
@@ -19,23 +26,37 @@ import kotlin.io.path.isReadable
 
 @RestController
 @RequestMapping("/api/files")
+@Tag(name = "Files", description = "Управление файлами")
 class FileController {
 
     @Value("\${file.upload-dir}")
     private lateinit var uploadDir: String
 
+    @Operation(
+        summary = "Потоковая передача видео",
+        description = "Возвращает видео файл для потоковой передачи",
+        parameters = [
+            Parameter(name = "path", description = "Путь к видео файлу", required = true, `in` = ParameterIn.QUERY)
+        ],
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Видео файл успешно получен",
+                content = [Content(
+                    mediaType = "video/*",
+                    schema = Schema(type = "string", format = "binary")
+                )]
+            ),
+            ApiResponse(responseCode = "400", description = "Неверный путь к файлу"),
+            ApiResponse(responseCode = "404", description = "Файл не найден")
+        ]
+    )
     @GetMapping("/video/stream")
-    fun streamVideo(@RequestParam path: String): ResponseEntity<Resource> {
-        // БЫЛО: val cleanPath = path.removePrefix("/videos/").removePrefix("/")
+    fun streamVideo(@Parameter(description = "Путь к видео файлу", required = true) @RequestParam path: String): ResponseEntity<Resource> {
         val decodedPath = URLDecoder.decode(path, StandardCharsets.UTF_8.toString())
-
-
-        // СТАЛО: Удаляем только начальный слэш, сохраняя структуру папок (videos/...)
         val cleanPath = decodedPath.removePrefix("/")
-
         val filePath: Path = Paths.get(uploadDir).resolve(cleanPath).normalize()
 
-        // Логирование для отладки (можно убрать потом)
         println("Запрос файла: $path")
         println("Ищем по пути: ${filePath.toAbsolutePath()}")
 
@@ -44,7 +65,6 @@ class FileController {
         }
 
         if (!filePath.exists() || !filePath.isReadable()) {
-            // Добавьте лог, чтобы видеть в консоли сервера, где именно не найден файл
             println("Файл не найден: ${filePath.toAbsolutePath()}")
             return ResponseEntity.notFound().build()
         }

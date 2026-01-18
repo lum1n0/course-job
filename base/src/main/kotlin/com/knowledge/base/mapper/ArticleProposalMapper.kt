@@ -1,20 +1,19 @@
-// src/main/kotlin/com/knowledge/base/mapper/ArticleProposalMapper.kt
 package com.knowledge.base.mapper
 
 import com.knowledge.base.dto.ArticleProposalDto
+import com.knowledge.base.model.Article
 import com.knowledge.base.model.ArticleProposal
 import org.springframework.stereotype.Component
 
-// Убираем зависимость от ModelMapper
 @Component
 class ArticleProposalMapper {
 
     fun toDto(proposal: ArticleProposal): ArticleProposalDto {
-        // Явно создаем DTO, передавая все поля
         return ArticleProposalDto(
             id = proposal.id,
-            articleId = proposal.articleId,
-            finalArticleId = proposal.finalArticleId, // <-- Новое поле
+            // ИСПРАВЛЕНИЕ 1: Достаем ID из связанного объекта (безопасный вызов ?.)
+            articleId = proposal.article?.id,
+            finalArticleId = proposal.finalArticleId,
             title = proposal.title,
             description = proposal.description,
             categoryId = proposal.categoryId,
@@ -34,12 +33,14 @@ class ArticleProposalMapper {
         )
     }
 
-    // Опционально: метод для маппинга DTO в Entity, если понадобится
-    fun toEntity(dto: ArticleProposalDto): ArticleProposal {
+    // ИСПРАВЛЕНИЕ 2: Изменили сигнатуру. Теперь принимаем article отдельно.
+    // Если articleId в DTO null, то и article передаем null.
+    fun toEntity(dto: ArticleProposalDto, article: Article? = null): ArticleProposal {
         return ArticleProposal(
             id = dto.id,
-            articleId = dto.articleId,
-            finalArticleId = dto.finalArticleId, // <-- Новое поле
+            // Передаем объект сущности
+            article = article,
+            finalArticleId = dto.finalArticleId,
             title = dto.title,
             description = dto.description,
             categoryId = dto.categoryId,

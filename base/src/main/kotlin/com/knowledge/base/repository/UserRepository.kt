@@ -15,6 +15,7 @@ interface UserRepository : JpaRepository<User, Long>{
     fun findByFirstName(firstName: String): List<User>
     fun findByLastName(lastName: String): List<User>
     fun findAllByIsDeleteFalse(pageable: Pageable): Page<User>
+    fun findAllByEmailIgnoreCase(email: String): List<User>
     fun findAllByIsDeleteTrue(pageable: Pageable): Page<User>
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.accessRoles WHERE u.id = :userId")
     fun findByIdWithAccessRoles(@Param("userId") userId: Long): Optional<User>

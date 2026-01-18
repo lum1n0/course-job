@@ -33,10 +33,12 @@ class CustomAuthenticationManager(
         val password = authentication.credentials
         logger.debug("CustomAuthenticationManager: start auth for '$raw'.")
 
-        // --- ИЗМЕНЕНИЕ: Быстрая проверка с игнорированием регистра ---
+        // --- ИЗМЕНЕНИЕ: Быстрая проверка с игнорированием регистра и обработкой дубликатов ---
         try {
-            val userInDb = userRepository.findByEmailIgnoreCase(raw)
-            if (userInDb != null && !userInDb.isFromLdap) {
+            // Используем findAll, чтобы избежать ошибки NonUniqueResultException
+            val users = userRepository.findAllByEmailIgnoreCase(raw)
+            // Если есть хотя бы один локальный пользователь — используем DAO
+            if (users.any { !it.isFromLdap }) {
                 logger.debug("User '$raw' found in DB as local (isFromLdap=false). Authenticating via DAO.")
                 return authenticateDao(raw, password)
             }

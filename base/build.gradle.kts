@@ -30,7 +30,7 @@ dependencies {
     implementation("org.jsoup:jsoup:1.17.2")
     implementation("org.apache.lucene:lucene-core:$luceneVersion")
     implementation("org.apache.lucene:lucene-queryparser:$luceneVersion")
-
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
     implementation("org.jsoup:jsoup:1.17.2")
 
     implementation(platform("org.springframework.ai:spring-ai-bom:${property("springAiVersion")}"))

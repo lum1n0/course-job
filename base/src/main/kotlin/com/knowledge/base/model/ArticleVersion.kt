@@ -19,8 +19,9 @@ data class ArticleVersion(
     @SequenceGenerator(name = "article_version_seq", sequenceName = "article_version_sequence", allocationSize = 1)
     val id: Long = 0,
 
-    @Column(nullable = false, name = "article_id")
-    val articleId: Long,
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "article_id", nullable = false)
+    val article: Article,
 
     @Column(nullable = false, name = "version")
     val version: Int,

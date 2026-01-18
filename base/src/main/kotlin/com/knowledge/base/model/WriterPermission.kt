@@ -15,14 +15,14 @@ data class WriterPermission(
     val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "writer_id", nullable = false)
-    val writer: User,
+@JoinColumn(name = "writer_id", nullable = false)
+val writer: User,
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "access_role_id", nullable = false)
-    val accessRole: AccessRole,
+@ManyToOne(fetch = FetchType.LAZY)
+@JoinColumn(name = "access_role_id", nullable = false)
+val accessRole: AccessRole,
 
-    @Column(name = "enabled", nullable = false)
-    val enabled: Boolean = true
+@Column(name = "enabled", nullable = false)
+val enabled: Boolean = true
 )
 

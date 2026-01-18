@@ -16,8 +16,9 @@ data class ArticleProposal(
     val id: Long = 0,
 
     // null -> создание новой статьи, иначе обновление существующей
-    @Column(name = "article_id")
-    val articleId: Long? = null,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "article_id")
+    val article: Article? = null,
 
     // Новое поле: ID статьи, которая была создана или обновлена в результате одобрения
     @Column(name = "final_article_id")

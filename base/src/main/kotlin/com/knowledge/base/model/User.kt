@@ -28,7 +28,7 @@ data class User(
     var role: Role,
 
     @Column(nullable = false, name = "is_delete")
-    val isDelete: Boolean = false,
+    var isDelete: Boolean = false,
 
     // --- НОВОЕ ПОЛЕ ---
     // Этот флаг показывает, был ли пользователь создан из LDAP (true) или локально (false).

@@ -1,9 +1,13 @@
-// src/main/kotlin/com/knowledge/base/controller/AuthController.kt
 package com.knowledge.base.controller
 
 import com.knowledge.base.service.RefreshTokenService
 import com.knowledge.base.service.UserDetailsServiceImpl
 import com.knowledge.base.util.JwtUtil
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -15,6 +19,7 @@ import java.time.Duration
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authentication", description = "Операции аутентификации")
 class AuthController(
     private val refreshService: RefreshTokenService,
     private val userDetails: UserDetailsServiceImpl,
@@ -29,17 +34,30 @@ class AuthController(
         return cookieSecureDefault || request.isSecure || xfProto.equals("https", ignoreCase = true)
     }
 
+    @Operation(
+        summary = "Обновить токен доступа",
+        description = "Обновляет access token используя refresh token из cookie",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "Токен успешно обновлен",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = Map::class)
+                )]
+            ),
+            ApiResponse(responseCode = "401", description = "Refresh token отсутствует или недействителен")
+        ]
+    )
     @PostMapping("/refresh")
     fun refresh(request: HttpServletRequest): ResponseEntity<Map<String, String>> {
         val cookie = request.cookies?.firstOrNull { it.name == cookieName }
             ?: return ResponseEntity.status(401).body(mapOf("error" to "No refresh cookie"))
         val userAgent = request.getHeader("User-Agent")
         val ip = request.remoteAddr
-
         val (newRaw, newRt) = refreshService.rotate(cookie.value, userAgent, ip)
         val ud = userDetails.loadUserByUsername(newRt.user.email)
         val access = jwtUtil.generateAccessToken(ud, newRt.tokenFamily)
-
         val setCookie = ResponseCookie.from(cookieName, newRaw)
             .httpOnly(true)
             .secure(isSecure(request))
@@ -47,12 +65,19 @@ class AuthController(
             .path("/")
             .maxAge(Duration.ofSeconds(refreshService.refreshTtlSeconds()))
             .build()
-
         return ResponseEntity.ok()
             .header(HttpHeaders.SET_COOKIE, setCookie.toString())
             .body(mapOf("token" to access))
     }
 
+    @Operation(
+        summary = "Выход из системы",
+        description = "Отзывает refresh token и очищает cookie",
+        responses = [
+            ApiResponse(responseCode = "204", description = "Успешный выход"),
+            ApiResponse(responseCode = "401", description = "Пользователь не авторизован")
+        ]
+    )
     @PostMapping("/logout")
     fun logout(request: HttpServletRequest): ResponseEntity<Void> {
         val cookie = request.cookies?.firstOrNull { it.name == cookieName }
