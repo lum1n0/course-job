@@ -524,14 +524,12 @@ class PDFService(
 
     // ============ ТАБЛИЦЫ ============
     private fun addHtmlTable(pdfDocument: Document, tableEl: Element, fonts: Fonts) {
-        val firstRow = tableEl.selectFirst("thead tr")
-            ?: tableEl.selectFirst("tbody tr")
-            ?: tableEl.selectFirst("tr")
-        val colCount = firstRow?.children()?.count {
-            it.tagName().equals("td", true) || it.tagName().equals("th", true)
-        } ?: 0
+        val firstRow = tableEl.selectFirst("thead > tr") ?: tableEl.selectFirst("tbody > tr") ?: tableEl.selectFirst("tr")
 
-        if (colCount <= 0) return
+        // ИСПРАВЛЕНИЕ: Используем select() вместо filter
+        val colCount = firstRow?.select("td, th")?.size ?: 0
+
+        if (colCount == 0) return
 
         val table = Table(colCount)
             .setWidth(UnitValue.createPercentValue(100f))
@@ -542,16 +540,16 @@ class PDFService(
 
         val rows = tableEl.select("tr")
         for (row in rows) {
-            val cells = row.children().filter {
-                it.tagName().equals("td", true) || it.tagName().equals("th", true)
-            }
+            // ИСПРАВЛЕНИЕ: Используем select() вместо filter с лямбдой
+            val cells = row.select("td, th")
+
             for (cellEl in cells) {
                 val isHeader = cellEl.tagName().equals("th", true)
                 val text = cellEl.text().replace("\u00a0", " ").trim()
                 val colspan = cellEl.attr("colspan").toIntOrNull() ?: 1
                 val rowspan = cellEl.attr("rowspan").toIntOrNull() ?: 1
 
-                // 🔥 Применяем стили из style атрибута
+                // style
                 val cellStyle = parseStyleAttribute(cellEl.attr("style"))
 
                 val p = Paragraph(text)
@@ -569,7 +567,6 @@ class PDFService(
                     cell.setBackgroundColor(ColorConstants.LIGHT_GRAY)
                 }
 
-                // Применяем фон если есть в стиле
                 if (cellStyle.backgroundColor != null) {
                     cell.setBackgroundColor(cellStyle.backgroundColor!!)
                 }
