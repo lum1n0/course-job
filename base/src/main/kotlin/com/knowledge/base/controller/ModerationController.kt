@@ -202,4 +202,23 @@ class ModerationController(
     ): ResponseEntity<ArticleProposalDto> {
         return ResponseEntity.ok(moderationService.getProposal(id, authentication.name))
     }
+    @Operation(
+        summary = "Получить историю проверенных заявок",
+        description = "Возвращает список заявок, которые были одобрены или отклонены текущим модератором",
+        responses = [
+            ApiResponse(
+                responseCode = "200",
+                description = "История успешно получена",
+                content = [Content(
+                    mediaType = "application/json",
+                    schema = Schema(implementation = List::class)
+                )]
+            )
+        ]
+    )
+    @GetMapping("/completed")
+    fun listCompleted(@Parameter(hidden = true) authentication: Authentication): ResponseEntity<List<ArticleProposalDto>> {
+        return ResponseEntity.ok(moderationService.listCompleted(authentication.name))
+    }
+
 }

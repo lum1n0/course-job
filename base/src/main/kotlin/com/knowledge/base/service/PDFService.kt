@@ -46,14 +46,24 @@ class PDFService(
     @Value("\${file.upload-dir}")
     private lateinit var uploadDir: String
 
-    private val imageBaseHttpPrefixes = listOf(
-        "http://localhost:8080/images/",
-        "https://localhost:8080/images/",
-        "http://10.15.23.244:8080/images/",
-        "https://10.15.23.244:8080/images/",
-        "http://pro-znania:8080/images/",
-        "https://pro-znania:8080/images/"
-    )
+    @Value("\${app.backend.url:http://localhost:8080}")
+    private lateinit var backendUrl: String
+
+    private val imageBaseHttpPrefixes: List<String>
+        get() {
+            val normalizedBackend = if (backendUrl.endsWith("/")) backendUrl else "$backendUrl/"
+            return listOf(
+                "${normalizedBackend}images/",
+                "http://localhost:8080/images/",
+                "https://localhost:8080/images/",
+                "http://backend:8080/images/",
+                "https://backend:8080/images/",
+                "http://10.15.23.244:8080/images/",
+                "https://10.15.23.244:8080/images/",
+                "http://pro-znania:8080/images/",
+                "https://pro-znania:8080/images/"
+            )
+        }
 
     private data class Fonts(
         val regular: PdfFont,

@@ -59,13 +59,13 @@ interface StatisticsRepository : JpaRepository<Article, Long> {
                     WHEN :period = 'WEEK' THEN 'week'
                     ELSE 'month'
                 END, 
-                c.created_at
+                c.creation_date
             ) AS bucket,
             COUNT(*) AS cnt
         FROM categories c
         WHERE c.is_delete = false
-          AND c.created_at IS NOT NULL
-          AND c.created_at >= :from AND c.created_at < :to
+          AND c.creation_date IS NOT NULL
+          AND c.creation_date >= :from AND c.creation_date < :to
         GROUP BY bucket
         ORDER BY bucket
         """,

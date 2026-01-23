@@ -10,4 +10,5 @@ import org.springframework.stereotype.Repository
 interface ArticleProposalRepository : JpaRepository<ArticleProposal, Long> {
     fun findAllByStatusOrderByCreatedAtDesc(status: ModerationStatus): List<ArticleProposal>
     fun findAllByAuthorIdOrderByCreatedAtDesc(authorId: Long): List<ArticleProposal>
+    fun findAllByReviewedByIdOrderByReviewedAtDesc(reviewedById: Long): List<ArticleProposal>
 }

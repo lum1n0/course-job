@@ -142,6 +142,21 @@ class ModerationService(
     }
 
     @Transactional(readOnly = true)
+    fun listCompleted(moderatorEmail: String): List<ArticleProposalDto> {
+        val moderator = userRepository.findByEmail(moderatorEmail) ?: throw AccessDeniedException("Forbidden")
+
+        // Проверяем, что это модератор или админ
+        if (moderator.role.title != "ADMIN" && moderator.role.title != "MODERATOR") {
+            throw AccessDeniedException("Forbidden")
+        }
+
+        // Возвращаем заявки, где reviewedById == ID текущего модератора
+        return articleProposalRepository.findAllByReviewedByIdOrderByReviewedAtDesc(moderator.id)
+            .map { articleProposalMapper.toDto(it) }
+    }
+
+
+    @Transactional(readOnly = true)
     fun listMyWork(currentUserEmail: String): List<ArticleProposalDto> {
         val user = userRepository.findByEmail(currentUserEmail) ?: throw AccessDeniedException("Forbidden")
         return articleProposalRepository.findAllByAuthorIdOrderByCreatedAtDesc(user.id)

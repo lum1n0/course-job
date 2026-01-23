@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.stereotype.Service
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 
@@ -41,6 +42,10 @@ class ArticleService(
     private val htmlToDeltaConverter: HtmlToDeltaConverter, // <-- Добавлено
     private val moderatorPermissionService: ModeratorPermissionService
 ) {
+
+    @Value("\${app.backend.url:http://localhost:8080}")
+    private lateinit var backendUrl: String
+
     @PostConstruct
     fun init() {
         fixImageUrlsOnStartup()
@@ -163,8 +168,11 @@ class ArticleService(
             }
 
             // Дополнительно: заменяем варианты с localhost и конкретными IP
+            val backendUrlWithSlash = if (backendUrl.endsWith("/")) backendUrl else "$backendUrl/"
             jsonString = jsonString
+                .replace("${backendUrlWithSlash}images/", "/images/")
                 .replace("http://localhost:8080/images/", "/images/")
+                .replace("http://backend:8080/images/", "/images/")
                 .replace("http://10.15.22.141:8080/images/", "/images/")
                 .replace("http://pro-znania:8080/images/", "/images/")
                 .replace("http://pro-znania/images/", "/images/")
@@ -277,7 +285,15 @@ class ArticleService(
     }
 
     @Transactional
-    fun updateArticle(currentUserEmail: String, id: Long, articleDto: ArticleDto, videoFile: MultipartFile?, files: List<MultipartFile>?): ArticleDto {
+    fun updateArticle(
+        currentUserEmail: String,
+        id: Long,
+        articleDto: ArticleDto,
+        videoFile: MultipartFile?,
+        files: List<MultipartFile>?,
+        removeFiles: List<String> = emptyList(),
+        removeVideo: Boolean = false
+    ): ArticleDto {
         val currentUser = userRepository.findByEmail(currentUserEmail)
             ?: throw AccessDeniedException("Forbidden")
         val existingArticle = articleRepository.findById(id)
@@ -285,16 +301,36 @@ class ArticleService(
         val newCategory = categoryRepository.findById(articleDto.categoryDto.id)
             .orElseThrow { IllegalArgumentException("Категория не найдена") }
         assertCanEditCategory(currentUser, newCategory)
+
         var newVideoPath = existingArticle.videoPath
         if (videoFile != null) {
             existingArticle.videoPath?.firstOrNull()?.let { fileStorageService.deleteFile(it) }
             newVideoPath = listOf(fileStorageService.saveFile(videoFile, "videos"))
+        } else if (removeVideo) {
+            existingArticle.videoPath?.firstOrNull()?.let { fileStorageService.deleteFile(it) }
+            newVideoPath = emptyList()
         }
-        var newFilePaths = existingArticle.filePath
+
+        var newFilePaths = existingArticle.filePath ?: emptyList()
+
+        // 1. Удаление выбранных файлов
+        if (removeFiles.isNotEmpty()) {
+            newFilePaths = newFilePaths.filter { path ->
+                if (path in removeFiles) {
+                    fileStorageService.deleteFile(path)
+                    false // исключаем из списка
+                } else {
+                    true // оставляем
+                }
+            }
+        }
+
+        // 2. Добавление новых файлов (append)
         if (files != null && files.isNotEmpty()) {
-            existingArticle.filePath?.forEach { fileStorageService.deleteFile(it) }
-            newFilePaths = files.map { fileStorageService.saveFile(it, "files") }
+            val uploadedPaths = files.map { fileStorageService.saveFile(it, "files") }
+            newFilePaths = newFilePaths + uploadedPaths
         }
+
         val updatedArticle = existingArticle.copy(
             title = articleDto.title,
             description = articleDto.description,

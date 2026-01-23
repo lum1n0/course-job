@@ -101,9 +101,9 @@ class FileStorageService {
         }
 
         when (type) {
-            "images" -> if (file.size > 10 * 1024 * 1024) throw IllegalArgumentException("Размер изображения не должен превышать 10MB")
-            "videos" -> if (file.size > 100 * 1024 * 1024) throw IllegalArgumentException("Размер видео не должен превышать 100MB")
-            "files" -> if (file.size > 50 * 1024 * 1024) throw IllegalArgumentException("Размер документа не должен превышать 50MB")
+            "images" -> if (file.size > 50 * 1024 * 1024) throw IllegalArgumentException("Размер изображения не должен превышать 50MB")
+            "videos" -> if (file.size > 500 * 1024 * 1024) throw IllegalArgumentException("Размер видео не должен превышать 500MB")
+            "files" -> if (file.size > 100 * 1024 * 1024) throw IllegalArgumentException("Размер документа не должен превышать 100MB")
         }
     }
 

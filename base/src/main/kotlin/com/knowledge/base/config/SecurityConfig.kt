@@ -125,6 +125,7 @@ class SecurityConfig(
                     .requestMatchers(HttpMethod.POST, "/api/moderation/submit/create").hasAnyRole("WRITER", "SUPER-WRITER")
                     .requestMatchers(HttpMethod.POST, "/api/moderation/submit/update/*").hasAnyRole("WRITER", "SUPER-WRITER")
                     .requestMatchers(HttpMethod.GET, "/api/moderation/pending").hasAnyRole("ADMIN", "MODERATOR")
+                    .requestMatchers(HttpMethod.GET, "/api/moderation/completed").hasAnyRole("ADMIN", "MODERATOR")
                     .requestMatchers(HttpMethod.GET, "/api/moderation/proposals/*").hasAnyRole("ADMIN", "MODERATOR")
                     .requestMatchers(HttpMethod.POST, "/api/moderation/proposals/*/approve").hasAnyRole("ADMIN", "MODERATOR")
                     .requestMatchers(HttpMethod.POST, "/api/moderation/proposals/*/reject").hasAnyRole("ADMIN", "MODERATOR")

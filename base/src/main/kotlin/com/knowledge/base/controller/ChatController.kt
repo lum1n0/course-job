@@ -48,7 +48,9 @@ class ChatController(
             chatService.saveMessage(chatMessage)
             simpMessagingTemplate.convertAndSend("/topic/${chatMessage.sessionId}", chatMessage)
 
+            java.io.File("debug_controller.log").appendText("Calling OllamaService with: '${chatMessage.message}', userId=${chatMessage.userId}\n")
             val botResponseText = ollamaService.generateResponse(chatMessage.message, chatMessage.userId)
+            java.io.File("debug_controller.log").appendText("OllamaService returned: '$botResponseText'\n")
             val botMessage = ChatMessage(
                 id = UUID.randomUUID().toString(),
                 sessionId = chatMessage.sessionId,

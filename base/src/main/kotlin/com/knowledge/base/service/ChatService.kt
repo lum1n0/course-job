@@ -6,12 +6,12 @@ import org.springframework.stereotype.Service
 import org.slf4j.LoggerFactory
 
 @Service
-class ChatService(
+open class ChatService(
     private val chatMessageRepository: ChatMessageRepository
 ) {
     private val logger = LoggerFactory.getLogger(ChatService::class.java)
 
-    fun saveMessage(chatMessage: ChatMessage) {
+    open fun saveMessage(chatMessage: ChatMessage) {
         logger.info("Attempting to save message: {}", chatMessage)
         chatMessageRepository.save(chatMessage)
         logger.info("Message saved successfully: {}", chatMessage)

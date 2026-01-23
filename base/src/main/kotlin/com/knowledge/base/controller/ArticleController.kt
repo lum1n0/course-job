@@ -214,19 +214,24 @@ class ArticleController(
         @Parameter(description = "Видео файл", required = false) @RequestParam("videoFile", required = false) videoFile: MultipartFile?,
         @Parameter(description = "Дополнительные файлы", required = false) @RequestParam("files", required = false) files: List<MultipartFile>?
     ): ResponseEntity<ArticleDto> {
-        val descriptionNode = objectMapper.readTree(descriptionJson)
-        val articleDto = ArticleDto(
-            id = 0,
-            title = title,
-            description = descriptionNode,
-            isDelete = false,
-            categoryDto = articleService.getCategoryDtoById(categoryId),
-            videoPath = null,
-            filePath = null
-        )
+        return try {
+            val descriptionNode = objectMapper.readTree(descriptionJson)
+            val articleDto = ArticleDto(
+                id = 0,
+                title = title,
+                description = descriptionNode,
+                isDelete = false,
+                categoryDto = articleService.getCategoryDtoById(categoryId),
+                videoPath = null,
+                filePath = null
+            )
 
-        val savedArticleDto = articleService.addArticle(authentication.name, articleDto, videoFile, files)
-        return ResponseEntity.ok(savedArticleDto)
+            val savedArticleDto = articleService.addArticle(authentication.name, articleDto, videoFile, files)
+            ResponseEntity.ok(savedArticleDto)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ResponseEntity.badRequest().build()
+        }
     }
 
     @Operation(
@@ -264,7 +269,9 @@ class ArticleController(
         @Parameter(description = "Новое описание статьи в формате JSON", required = true) @RequestParam("description") descriptionJson: String,
         @Parameter(description = "Новый ID категории", required = true) @RequestParam("categoryId") categoryId: Long,
         @Parameter(description = "Новый видео файл", required = false) @RequestParam("videoFile", required = false) videoFile: MultipartFile?,
-        @Parameter(description = "Новые дополнительные файлы", required = false) @RequestParam("files", required = false) files: List<MultipartFile>?
+        @Parameter(description = "Новые дополнительные файлы", required = false) @RequestParam("files", required = false) files: List<MultipartFile>?,
+        @Parameter(description = "Список файлов для удаления", required = false) @RequestParam("removeFiles", required = false) removeFiles: List<String>?,
+        @Parameter(description = "Удалить видео", required = false) @RequestParam("removeVideo", required = false) removeVideo: Boolean?
     ): ResponseEntity<ArticleDto> {
         return try {
             val descriptionNode = objectMapper.readTree(descriptionJson)
@@ -278,7 +285,7 @@ class ArticleController(
                 filePath = null
             )
 
-            val updatedArticle = articleService.updateArticle(authentication.name, id, articleDto, videoFile, files)
+            val updatedArticle = articleService.updateArticle(authentication.name, id, articleDto, videoFile, files, removeFiles ?: emptyList(), removeVideo ?: false)
             ResponseEntity.ok(updatedArticle)
         } catch (e: Exception) {
             e.printStackTrace()

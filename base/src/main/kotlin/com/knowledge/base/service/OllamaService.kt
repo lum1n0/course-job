@@ -16,7 +16,7 @@ import java.util.Comparator
 import java.util.Locale
 
 @Service
-class OllamaService(
+open class OllamaService(
     private val vectorStore: VectorStore,
     private val userRepository: UserRepository,
     private val articleRepository: ArticleRepository,
@@ -29,7 +29,7 @@ class OllamaService(
     fun getGreetingMessage(): String = "Привет! Я ваш помощник по базе знаний. Чем могу помочь?"
 
     @Transactional(readOnly = true)
-    fun generateResponse(userMessage: String, userId: Long): String {
+    open fun generateResponse(userMessage: String, userId: Long): String {
         val original = userMessage.trim()
         val lower = original.lowercase()
         val cleaned = lower.replace(Regex("[^а-яёa-z0-9 ]"), "").trim() // Удаляем пунктуацию и специальные символы, оставляем буквы, цифры и пробелы
