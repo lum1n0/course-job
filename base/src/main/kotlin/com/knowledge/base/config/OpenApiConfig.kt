@@ -6,12 +6,17 @@ import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.info.License
 import io.swagger.v3.oas.models.media.Content
+import io.swagger.v3.oas.models.media.IntegerSchema
+import io.swagger.v3.oas.models.media.StringSchema
+import io.swagger.v3.oas.models.parameters.Parameter
 import io.swagger.v3.oas.models.responses.ApiResponse
 import io.swagger.v3.oas.models.security.SecurityRequirement
 import io.swagger.v3.oas.models.security.SecurityScheme
 import io.swagger.v3.oas.models.tags.Tag
+import org.springdoc.core.customizers.OperationCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.domain.Pageable
 
 @Configuration
 class OpenApiConfig {
@@ -71,5 +76,48 @@ class OpenApiConfig {
                             .content(Content())
                     )
             )
+    }
+
+    /**
+     * Кастомайзер для отображения параметров пагинации в Swagger UI.
+     * Заменяет скрытый параметр Pageable на отдельные параметры page, size, sort.
+     */
+    @Bean
+    fun pageableOperationCustomizer(): OperationCustomizer = OperationCustomizer { operation, handlerMethod ->
+        val hasPageable = handlerMethod.methodParameters.any { param ->
+            Pageable::class.java.isAssignableFrom(param.parameterType)
+        }
+
+        if (hasPageable) {
+            // Удаляем скрытый параметр pageable если он есть
+            operation.parameters?.removeIf { it.name == "pageable" }
+
+            // Добавляем явные параметры пагинации
+            operation.addParametersItem(
+                Parameter()
+                    .name("page")
+                    .`in`("query")
+                    .description("Номер страницы (начиная с 0)")
+                    .required(false)
+                    .schema(IntegerSchema().example(0))
+            )
+            operation.addParametersItem(
+                Parameter()
+                    .name("size")
+                    .`in`("query")
+                    .description("Количество элементов на странице")
+                    .required(false)
+                    .schema(IntegerSchema().example(20))
+            )
+            operation.addParametersItem(
+                Parameter()
+                    .name("sort")
+                    .`in`("query")
+                    .description("Сортировка (формат: field,asc|desc). Пример: id,desc")
+                    .required(false)
+                    .schema(StringSchema().example("id,desc"))
+            )
+        }
+        operation
     }
 }

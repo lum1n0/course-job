@@ -1,6 +1,7 @@
 package com.knowledge.base.controller
 
 import org.springframework.web.bind.annotation.*
+import com.knowledge.base.dto.CreateUserRequest
 import com.knowledge.base.dto.UserDto
 import com.knowledge.base.service.RefreshTokenService
 import com.knowledge.base.service.UserService
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
@@ -270,13 +272,13 @@ class UserController(
 
     @Operation(
         summary = "Создать пользователя",
-        description = "Создает нового пользователя в системе (только для ADMIN)",
+        description = "Создает нового пользователя в системе (только для ADMIN). Валидация: email должен содержать @, пароль минимум 6 символов.",
         requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Данные нового пользователя",
             required = true,
             content = [Content(
                 mediaType = "application/json",
-                schema = Schema(implementation = UserDto::class)
+                schema = Schema(implementation = CreateUserRequest::class)
             )]
         ),
         responses = [
@@ -288,14 +290,14 @@ class UserController(
                     schema = Schema(implementation = UserDto::class)
                 )]
             ),
-            ApiResponse(responseCode = "400", description = "Неверные данные"),
+            ApiResponse(responseCode = "400", description = "Ошибка валидации данных"),
             ApiResponse(responseCode = "403", description = "Доступ запрещен")
         ]
     )
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
-    fun createUser(@RequestBody userDto: UserDto): ResponseEntity<UserDto> {
-        val newUser: UserDto = userService.createUser(userDto)
+    fun createUser(@Valid @RequestBody request: CreateUserRequest): ResponseEntity<UserDto> {
+        val newUser: UserDto = userService.createUser(request.toUserDto())
         return ResponseEntity.ok(newUser)
     }
 

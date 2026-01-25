@@ -189,7 +189,7 @@ class SecurityConfig(
                     .requestMatchers(HttpMethod.DELETE, "/api/articles/delete/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.DELETE, "/api/category/delete/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.POST, "/api/category").hasAnyRole("ADMIN", "SUPER-WRITER")
-                    .requestMatchers(HttpMethod.GET, "/api/articles/all").hasAnyRole("ADMIN", "WRITER", "MODERATOR", "SUPER-WRITER")
+                    .requestMatchers(HttpMethod.GET, "/api/articles/all").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.PATCH, "/api/articles/{id}/soft-delete").hasAnyRole("ADMIN", "WRITER", "MODERATOR", "SUPER-WRITER")
 
                     .requestMatchers(HttpMethod.PUT, "/api/category/{id}").hasAnyRole("ADMIN", "SUPER-WRITER")

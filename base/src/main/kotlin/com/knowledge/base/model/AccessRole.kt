@@ -16,16 +16,16 @@ data class AccessRole(
 
 
     @Column(nullable = false, name = "title")
-val title: String = "",
+    val title: String = "",
 
-@Column(nullable = false, name = "translit_title")
-val translitTitle: String = "",
+    @Column(nullable = false, name = "translit_title")
+    val translitTitle: String = "",
 
-@ManyToMany(mappedBy = "accessRoles")
-val users: MutableList<User> = mutableListOf(),
+    @ManyToMany(mappedBy = "accessRoles")
+    val users: MutableList<User> = mutableListOf(),
 
-@ManyToMany(mappedBy = "accessRoles")
-val categories: MutableList<Category> = mutableListOf(),
+    @ManyToMany(mappedBy = "accessRoles")
+    val categories: MutableList<Category> = mutableListOf(),
 ) {
     @PreRemove
     private fun removeAssociations() {

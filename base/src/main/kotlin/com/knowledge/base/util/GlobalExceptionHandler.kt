@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import org.springframework.web.bind.MissingServletRequestParameterException
+import org.springframework.web.bind.MethodArgumentNotValidException
 import java.time.LocalDateTime
 
 @RestControllerAdvice
@@ -41,7 +42,21 @@ class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error)
     }
 
-    // 3. Не найдено (404)
+    // 3. Ошибки валидации @Valid
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleValidationErrors(ex: MethodArgumentNotValidException): ResponseEntity<ErrorResponse> {
+        val errors = ex.bindingResult.fieldErrors.map { fieldError ->
+            "${fieldError.field}: ${fieldError.defaultMessage}"
+        }
+        val error = ErrorResponse(
+            status = HttpStatus.BAD_REQUEST.value(),
+            message = "Ошибка валидации: ${errors.joinToString("; ")}",
+            timestamp = LocalDateTime.now()
+        )
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error)
+    }
+
+    // 4. Не найдено (404)
     @ExceptionHandler(NoSuchElementException::class)
     fun handleNotFound(ex: NoSuchElementException): ResponseEntity<ErrorResponse> {
         val error = ErrorResponse(
