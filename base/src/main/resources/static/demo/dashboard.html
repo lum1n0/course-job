@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Дашборды | Pro Znania</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #009AA3;
+            --slate: #67767D;
+            --accent: #E4002F;
+            --bg: #f6f7f9;
+            --bg-soft: #ffffff;
+            --bg-panel: rgba(103, 118, 125, 0.12);
+            --text: #1a1f24;
+            --muted: #4f5c66;
+            --border: rgba(0, 0, 0, 0.08);
+            --shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f1317;
+                --bg-soft: #151c22;
+                --bg-panel: rgba(103, 118, 125, 0.2);
+                --text: #e7eef3;
+                --muted: #a3b0ba;
+                --border: rgba(255, 255, 255, 0.08);
+                --shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Manrope", "Segoe UI", Tahoma, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .shell {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .brand {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: grid;
+            gap: 4px;
+        }
+
+        .brand span {
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .nav a.primary {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .nav a.secondary {
+            background: var(--bg-soft);
+            border-color: var(--border);
+        }
+
+        .nav a:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .hero {
+            background: linear-gradient(120deg, rgba(0, 154, 163, 0.18), rgba(103, 118, 125, 0.22));
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px 20px;
+            display: grid;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.7rem;
+            margin: 0;
+        }
+
+        .hero p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .card {
+            background: var(--bg-soft);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .auth {
+            display: grid;
+            grid-template-columns: minmax(240px, 320px) 1fr;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .field {
+            display: grid;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        input {
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            background: var(--bg-panel);
+            padding: 10px 12px;
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: border 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: rgba(0, 154, 163, 0.5);
+            box-shadow: 0 0 0 3px rgba(0, 154, 163, 0.2);
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            background: var(--primary);
+            color: #ffffff;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button.secondary {
+            background: var(--bg-panel);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .status {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .kpi {
+            display: grid;
+            gap: 8px;
+        }
+
+        .kpi span {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .kpi strong {
+            font-size: 1.6rem;
+        }
+
+        .delta {
+            font-size: 0.85rem;
+            color: var(--primary);
+        }
+
+        .delta.alert {
+            color: var(--accent);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 20px;
+        }
+
+        .chart {
+            display: grid;
+            gap: 10px;
+        }
+
+        .chart svg {
+            width: 100%;
+            height: 180px;
+        }
+
+        .list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px 12px;
+            background: var(--bg-panel);
+            border-radius: 12px;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            background: rgba(0, 154, 163, 0.15);
+            color: var(--primary);
+        }
+
+        .badge.alert {
+            background: rgba(228, 0, 47, 0.12);
+            color: var(--accent);
+        }
+
+        .footer-note {
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 960px) {
+            .auth {
+                grid-template-columns: 1fr;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="topbar">
+        <div class="brand">
+            Pro Znania • Дашборды
+            <span>Данные из StatisticsRepository</span>
+        </div>
+        <nav class="nav">
+            <a class="secondary" href="/demo/chat.html">Чат</a>
+            <a class="primary" href="/demo/dashboard.html">Дашборды</a>
+            <a class="secondary" href="/swagger-ui/index.html#/">Swagger</a>
+        </nav>
+    </div>
+
+    <section class="hero">
+        <h1>Контрольная панель платформы</h1>
+        <p>Метрики формируются через `/api/stats` и обновляются по кнопке. Нужен JWT токен (как в чате).</p>
+    </section>
+
+    <section class="card auth">
+        <div class="field">
+            <label for="token">JWT токен (без Bearer)</label>
+            <input id="token" placeholder="eyJhbGciOi..." autocomplete="off">
+        </div>
+        <div class="btn-row">
+            <button id="saveToken">Сохранить токен</button>
+            <button id="loadStats" class="secondary">Обновить дашборд</button>
+            <button id="clearToken" class="secondary">Очистить</button>
+        </div>
+        <div class="status" id="statusText">Ожидание токена…</div>
+    </section>
+
+    <section class="kpi-grid">
+        <div class="card kpi">
+            <span>Активные статьи</span>
+            <strong id="kpiArticles">—</strong>
+            <div class="delta" id="kpiArticlesDelta">данные из StatisticsRepository</div>
+        </div>
+        <div class="card kpi">
+            <span>Активные категории</span>
+            <strong id="kpiCategories">—</strong>
+            <div class="delta" id="kpiCategoriesDelta">данные из StatisticsRepository</div>
+        </div>
+        <div class="card kpi">
+            <span>Создано статей (90 дн.)</span>
+            <strong id="kpiArticles90">—</strong>
+            <div class="delta" id="kpiArticles90Delta">/api/stats/articles/frequency</div>
+        </div>
+        <div class="card kpi">
+            <span>Создано категорий (90 дн.)</span>
+            <strong id="kpiCategories90">—</strong>
+            <div class="delta" id="kpiCategories90Delta">/api/stats/categories/frequency</div>
+        </div>
+    </section>
+
+    <section class="grid">
+        <div class="card chart">
+            <strong>Динамика создания статей</strong>
+            <svg viewBox="0 0 600 180" preserveAspectRatio="none" id="articlesChart">
+                <defs>
+                    <linearGradient id="lineFill" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0%" stop-color="#009AA3" stop-opacity="0.35"/>
+                        <stop offset="100%" stop-color="#009AA3" stop-opacity="0.02"/>
+                    </linearGradient>
+                </defs>
+                <path id="chartFill" d="M0 150 L600 150 L600 180 L0 180 Z" fill="url(#lineFill)"></path>
+                <path id="chartLine" d="M0 150 L600 150" fill="none" stroke="#009AA3" stroke-width="4"></path>
+            </svg>
+            <div class="footer-note" id="lastUpdate">Обновлено: —</div>
+        </div>
+
+        <div class="card">
+            <strong>Подсказки</strong>
+            <div class="list" style="margin-top: 12px;">
+                <div class="list-item">
+                    <div>
+                        <div>Статьи</div>
+                        <div class="footer-note">/api/stats/counters-articles</div>
+                    </div>
+                    <span class="badge">Auth</span>
+                </div>
+                <div class="list-item">
+                    <div>
+                        <div>Категории</div>
+                        <div class="footer-note">/api/stats/counters-categories</div>
+                    </div>
+                    <span class="badge">Auth</span>
+                </div>
+                <div class="list-item">
+                    <div>
+                        <div>Частота статей</div>
+                        <div class="footer-note">/api/stats/articles/frequency</div>
+                    </div>
+                    <span class="badge alert">Admin</span>
+                </div>
+                <div class="list-item">
+                    <div>
+                        <div>Частота категорий</div>
+                        <div class="footer-note">/api/stats/categories/frequency</div>
+                    </div>
+                    <span class="badge alert">Admin</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    const TOKEN_KEY = "pro-znania.jwt";
+
+    const tokenInput = document.getElementById("token");
+    const statusText = document.getElementById("statusText");
+
+    const normalizeToken = (raw) => {
+        if (!raw) return "";
+        const trimmed = raw.trim();
+        return trimmed.toLowerCase().startsWith("bearer ")
+            ? trimmed.slice(7).trim()
+            : trimmed;
+    };
+
+    const getToken = () => normalizeToken(localStorage.getItem(TOKEN_KEY) || tokenInput.value);
+
+    const saveToken = () => {
+        const normalized = normalizeToken(tokenInput.value);
+        if (normalized) {
+            localStorage.setItem(TOKEN_KEY, normalized);
+            tokenInput.value = normalized;
+        }
+    };
+
+    const clearToken = () => {
+        localStorage.removeItem(TOKEN_KEY);
+        tokenInput.value = "";
+        statusText.textContent = "Токен очищен.";
+    };
+
+    const updateChart = (points) => {
+        const line = document.getElementById("chartLine");
+        const fill = document.getElementById("chartFill");
+        if (!points || points.length === 0) {
+            line.setAttribute("d", "M0 150 L600 150");
+            fill.setAttribute("d", "M0 150 L600 150 L600 180 L0 180 Z");
+            return;
+        }
+        const max = Math.max(...points.map(p => p.count), 1);
+        const step = 600 / (points.length - 1 || 1);
+        const coords = points.map((p, idx) => {
+            const x = idx * step;
+            const y = 160 - (p.count / max) * 120;
+            return `${x} ${y}`;
+        });
+        line.setAttribute("d", `M${coords.join(" L")}`);
+        fill.setAttribute("d", `M${coords.join(" L")} L600 180 L0 180 Z`);
+    };
+
+    const setValue = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    };
+
+    const loadStats = async () => {
+        const token = getToken();
+        if (!token) {
+            statusText.textContent = "Нужен JWT токен для запросов /api/stats.";
+            return;
+        }
+        statusText.textContent = "Запрашиваем статистику…";
+        const headers = { Authorization: `Bearer ${token}` };
+
+        try {
+            const [articlesRes, categoriesRes] = await Promise.all([
+                fetch("/api/stats/counters-articles", { headers }),
+                fetch("/api/stats/counters-categories", { headers })
+            ]);
+
+            if (articlesRes.ok) {
+                const data = await articlesRes.json();
+                setValue("kpiArticles", data.totalArticles ?? "—");
+            }
+            if (categoriesRes.ok) {
+                const data = await categoriesRes.json();
+                setValue("kpiCategories", data.totalCategories ?? "—");
+            }
+
+            const freqRes = await fetch("/api/stats/articles/frequency?period=DAY", { headers });
+            if (freqRes.ok) {
+                const data = await freqRes.json();
+                const points = (data.points || []).map(p => ({ count: Number(p.count || 0) }));
+                const total90 = points.reduce((sum, p) => sum + p.count, 0);
+                setValue("kpiArticles90", total90.toLocaleString("ru-RU"));
+                updateChart(points);
+            } else {
+                setValue("kpiArticles90", "Требуется ADMIN");
+            }
+
+            const catFreqRes = await fetch("/api/stats/categories/frequency?period=DAY", { headers });
+            if (catFreqRes.ok) {
+                const data = await catFreqRes.json();
+                const points = (data.points || []).map(p => ({ count: Number(p.count || 0) }));
+                const total90 = points.reduce((sum, p) => sum + p.count, 0);
+                setValue("kpiCategories90", total90.toLocaleString("ru-RU"));
+            } else {
+                setValue("kpiCategories90", "Требуется ADMIN");
+            }
+
+            document.getElementById("lastUpdate").textContent =
+                `Обновлено: ${new Date().toLocaleTimeString()}`;
+            statusText.textContent = "Данные обновлены.";
+        } catch (err) {
+            statusText.textContent = "Ошибка загрузки статистики.";
+        }
+    };
+
+    const saved = localStorage.getItem(TOKEN_KEY);
+    if (saved) tokenInput.value = saved;
+
+    document.getElementById("saveToken").addEventListener("click", () => {
+        saveToken();
+        loadStats();
+    });
+    document.getElementById("loadStats").addEventListener("click", loadStats);
+    document.getElementById("clearToken").addEventListener("click", clearToken);
+</script>
+</body>
+</html>

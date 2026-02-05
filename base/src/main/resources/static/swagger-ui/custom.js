@@ -3,6 +3,7 @@
 // ====================================
 
 window.addEventListener('load', function() {
+    const TOKEN_KEY = "pro-znania.jwt";
 
     // Добавляем кастомный заголовок
     const topbar = document.querySelector('.topbar');
@@ -10,6 +11,12 @@ window.addEventListener('load', function() {
         const customHeader = document.createElement('div');
         customHeader.innerHTML = '<h3 style="color: white; margin: 0; padding: 10px 20px; font-size: 1.2em;">Pro Znania API Documentation</h3>';
         topbar.prepend(customHeader);
+        const topbarWrapper = document.querySelector('.topbar-wrapper') || topbar;
+        const demoLink = document.createElement('a');
+        demoLink.href = '/demo/chat.html';
+        demoLink.textContent = 'Демо чата';
+        demoLink.className = 'pz-demo-link';
+        topbarWrapper.appendChild(demoLink);
     }
 
     // Анимация для кнопок при клике
@@ -201,4 +208,36 @@ window.addEventListener('load', function() {
 
     console.log('%c Pro Znania API ', 'background: #009AA3; color: white; font-size: 16px; padding: 10px;');
     console.log('%c Документация успешно загружена! ', 'background: #E4002F; color: white; font-size: 12px; padding: 5px;');
+
+    // Синхронизация токена из Swagger UI в localStorage для демо-страницы
+    const normalizeToken = (value) => {
+        if (!value) return '';
+        const trimmed = String(value).trim();
+        return trimmed.toLowerCase().startsWith('bearer ')
+            ? trimmed.slice(7).trim()
+            : trimmed;
+    };
+
+    const extractToken = () => {
+        if (!window.ui || !window.ui.getState) return '';
+        try {
+            const state = window.ui.getState();
+            const auth = state.get ? state.get('auth') : state.auth;
+            const authorized = auth && auth.get ? auth.get('authorized') : auth?.authorized;
+            const bearer = authorized && authorized.get ? authorized.get('bearerAuth') : authorized?.bearerAuth;
+            const value = bearer && bearer.get ? bearer.get('value') : bearer?.value;
+            return normalizeToken(value);
+        } catch (e) {
+            return '';
+        }
+    };
+
+    const syncInterval = setInterval(() => {
+        const token = extractToken();
+        if (token) {
+            localStorage.setItem(TOKEN_KEY, token);
+        }
+    }, 1500);
+
+    window.addEventListener('beforeunload', () => clearInterval(syncInterval));
 });

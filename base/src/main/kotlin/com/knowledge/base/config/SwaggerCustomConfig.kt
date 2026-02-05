@@ -9,7 +9,11 @@ class SwaggerCustomConfig : WebMvcConfigurer {
     override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
         registry
             .addResourceHandler("/swagger-ui/**")
-            .addResourceLocations("classpath:/static/swagger-ui/")
+            .addResourceLocations(
+                "classpath:/static/swagger-ui/",
+                "classpath:/META-INF/resources/webjars/swagger-ui/5.10.3/",
+                "classpath:/META-INF/resources/"
+            )
             .resourceChain(false)
     }
 }

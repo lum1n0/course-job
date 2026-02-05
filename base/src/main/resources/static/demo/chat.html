@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Демо чата | Pro Znania</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #009AA3;
+            --slate: #67767D;
+            --accent: #E4002F;
+            --bg: #f6f7f9;
+            --bg-soft: #ffffff;
+            --bg-panel: rgba(103, 118, 125, 0.12);
+            --text: #1a1f24;
+            --muted: #4f5c66;
+            --border: rgba(0, 0, 0, 0.08);
+            --shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f1317;
+                --bg-soft: #151c22;
+                --bg-panel: rgba(103, 118, 125, 0.2);
+                --text: #e7eef3;
+                --muted: #a3b0ba;
+                --border: rgba(255, 255, 255, 0.08);
+                --shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Manrope", "Segoe UI", Tahoma, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .shell {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .brand {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: grid;
+            gap: 4px;
+        }
+
+        .brand span {
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            padding: 8px 14px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .nav a.primary {
+            background: var(--primary);
+            color: #ffffff;
+        }
+
+        .nav a.secondary {
+            background: var(--bg-soft);
+            border-color: var(--border);
+        }
+
+        .nav a:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .hero {
+            background: linear-gradient(120deg, rgba(0, 154, 163, 0.18), rgba(103, 118, 125, 0.22));
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 18px 20px;
+            display: grid;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .hero h1 {
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 1.7rem;
+            margin: 0;
+        }
+
+        .hero p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--bg-soft);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .card h2 {
+            margin: 0 0 12px;
+            font-size: 1.05rem;
+        }
+
+        .field {
+            display: grid;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        input, textarea {
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            background: var(--bg-panel);
+            padding: 10px 12px;
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: border 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: rgba(0, 154, 163, 0.5);
+            box-shadow: 0 0 0 3px rgba(0, 154, 163, 0.2);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            background: var(--primary);
+            color: #ffffff;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button.secondary {
+            background: var(--bg-panel);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        button.danger {
+            background: rgba(228, 0, 47, 0.9);
+            color: #ffffff;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 8px rgba(228, 0, 47, 0.4);
+        }
+
+        .dot.ok {
+            background: var(--primary);
+            box-shadow: 0 0 8px rgba(0, 154, 163, 0.4);
+        }
+
+        .chat-card {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 12px;
+            min-height: 560px;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .chat-log {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            background: var(--bg-soft);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px 14px;
+        }
+
+        .message.me {
+            border-left: 4px solid var(--primary);
+        }
+
+        .message.bot {
+            border-left: 4px solid var(--slate);
+        }
+
+        .message.system {
+            border-left: 4px solid var(--accent);
+            background: rgba(228, 0, 47, 0.08);
+        }
+
+        .message .meta {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .helper {
+            font-size: 0.82rem;
+            color: var(--muted);
+            margin: 0;
+        }
+
+        @media (max-width: 960px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="topbar">
+        <div class="brand">
+            Pro Znania • Чат
+            <span>WebSocket демонстрация + LLM ответы</span>
+        </div>
+        <nav class="nav">
+            <a class="primary" href="/demo/chat.html">Чат</a>
+            <a class="secondary" href="/demo/dashboard.html">Дашборды</a>
+            <a class="secondary" href="/swagger-ui/index.html#/">Swagger</a>
+        </nav>
+    </div>
+
+    <section class="hero">
+        <h1>Живой чат для демонстрации</h1>
+        <p>Используйте JWT токен, подключайтесь по STOMP и наблюдайте ответы LLM. Токен хранится в браузере и доступен для Swagger.</p>
+    </section>
+
+    <div class="layout">
+        <aside class="card">
+            <h2>Авторизация и сессия</h2>
+            <div class="field">
+                <label for="token">JWT токен (без Bearer)</label>
+                <input id="token" placeholder="eyJhbGciOi..." autocomplete="off">
+            </div>
+            <div class="btn-row">
+                <button id="saveToken">Сохранить токен</button>
+                <button id="clearToken" class="secondary">Очистить</button>
+            </div>
+
+            <div class="field" style="margin-top: 14px;">
+                <label for="sessionId">Session ID</label>
+                <input id="sessionId" placeholder="будет заполнен автоматически">
+            </div>
+            <div class="field">
+                <label for="userId">User ID</label>
+                <input id="userId" placeholder="будет заполнен автоматически">
+            </div>
+            <div class="btn-row">
+                <button id="loadProfile" class="secondary">Получить данные по токену</button>
+            </div>
+
+            <div style="margin-top: 14px;">
+                <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Отключено</span></div>
+            </div>
+            <p class="helper" style="margin-top: 12px;">
+                Подключение использует endpoint `/chat`, подписку `/topic/{sessionId}` и отправку в `/app/chat.sendMessage`.
+            </p>
+        </aside>
+
+        <main class="card chat-card">
+            <div class="chat-header">
+                <h2>Диалог</h2>
+                <div class="btn-row">
+                    <button id="connect">Подключиться</button>
+                    <button id="disconnect" class="secondary">Отключиться</button>
+                    <button id="greeting" class="secondary">Приветствие</button>
+                </div>
+            </div>
+
+            <div class="chat-log" id="chatLog"></div>
+
+            <div>
+                <div class="field">
+                    <label for="message">Сообщение</label>
+                    <textarea id="message" placeholder="Введите сообщение для LLM..."></textarea>
+                </div>
+                <div class="btn-row">
+                    <button id="send">Отправить</button>
+                    <button id="clearChat" class="secondary">Очистить чат</button>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+<script>
+    const TOKEN_KEY = "pro-znania.jwt";
+    const SESSION_KEY = "pro-znania.chat.sessionId";
+    const USER_KEY = "pro-znania.userId";
+
+    const tokenInput = document.getElementById("token");
+    const sessionInput = document.getElementById("sessionId");
+    const userInput = document.getElementById("userId");
+    const statusDot = document.getElementById("statusDot");
+    const statusText = document.getElementById("statusText");
+    const chatLog = document.getElementById("chatLog");
+
+    let stompClient = null;
+    const seenMessageIds = new Set();
+
+    const normalizeToken = (raw) => {
+        if (!raw) return "";
+        const trimmed = raw.trim();
+        return trimmed.toLowerCase().startsWith("bearer ")
+            ? trimmed.slice(7).trim()
+            : trimmed;
+    };
+
+    const setStatus = (connected, text) => {
+        statusDot.classList.toggle("ok", connected);
+        statusText.textContent = text;
+    };
+
+    const appendMessage = (payload, isSelf = false) => {
+        if (payload?.id) {
+            if (seenMessageIds.has(payload.id)) {
+                return;
+            }
+            seenMessageIds.add(payload.id);
+        }
+        const isBot = payload?.isFromBot === true;
+        const isSystem = payload?.system === true;
+        const wrapper = document.createElement("div");
+        wrapper.className = "message" + (isSystem ? " system" : isBot ? " bot" : isSelf ? " me" : "");
+        const time = payload?.timestamp ? new Date(payload.timestamp).toLocaleTimeString() : new Date().toLocaleTimeString();
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.textContent = isSystem ? `Система • ${time}` : `${isBot ? "Бот" : "Пользователь"} • ${time}`;
+        const body = document.createElement("div");
+        body.textContent = payload?.message || "";
+        wrapper.appendChild(meta);
+        wrapper.appendChild(body);
+        chatLog.appendChild(wrapper);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    };
+
+    const appendSystem = (text) => appendMessage({ message: text, system: true });
+
+    const getToken = () => normalizeToken(localStorage.getItem(TOKEN_KEY) || tokenInput.value);
+
+    const saveToken = () => {
+        const normalized = normalizeToken(tokenInput.value);
+        if (normalized) {
+            localStorage.setItem(TOKEN_KEY, normalized);
+            tokenInput.value = normalized;
+        }
+    };
+
+    const clearToken = () => {
+        localStorage.removeItem(TOKEN_KEY);
+        tokenInput.value = "";
+    };
+
+    const setSessionId = (value) => {
+        if (!value) return;
+        sessionInput.value = value;
+        localStorage.setItem(SESSION_KEY, value);
+    };
+
+    const setUserId = (value) => {
+        if (!value) return;
+        userInput.value = value;
+        localStorage.setItem(USER_KEY, value);
+    };
+
+    const loadPersisted = () => {
+        const savedToken = localStorage.getItem(TOKEN_KEY);
+        if (savedToken) tokenInput.value = savedToken;
+        const savedSession = localStorage.getItem(SESSION_KEY);
+        if (savedSession) sessionInput.value = savedSession;
+        const savedUser = localStorage.getItem(USER_KEY);
+        if (savedUser) userInput.value = savedUser;
+    };
+
+    const fetchProfile = async () => {
+        const token = getToken();
+        if (!token) {
+            appendSystem("Сначала сохраните JWT токен.");
+            return;
+        }
+        try {
+            const [userResp, sessionResp] = await Promise.all([
+                fetch("/api/user/me", { headers: { Authorization: `Bearer ${token}` } }),
+                fetch("/api/chat/session/current", { headers: { Authorization: `Bearer ${token}` } })
+            ]);
+            if (userResp.ok) {
+                const data = await userResp.json();
+                if (data?.userId) setUserId(data.userId);
+            }
+            if (sessionResp.ok) {
+                const data = await sessionResp.json();
+                if (data?.sessionId) setSessionId(data.sessionId);
+            }
+            appendSystem("Данные по токену обновлены.");
+        } catch (err) {
+            appendSystem("Не удалось получить данные по токену.");
+        }
+    };
+
+    const connect = () => {
+        const token = getToken();
+        if (!token) {
+            appendSystem("JWT токен не задан. Подключение невозможно.");
+            return;
+        }
+        let sessionId = sessionInput.value.trim();
+        if (!sessionId) {
+            sessionId = (crypto && crypto.randomUUID) ? crypto.randomUUID() : `session-${Date.now()}`;
+            setSessionId(sessionId);
+        }
+        if (!userInput.value.trim()) {
+            setUserId("0");
+        }
+
+        const socket = new SockJS("/chat");
+        stompClient = Stomp.over(socket);
+        stompClient.debug = null;
+        stompClient.connect(
+            { Authorization: `Bearer ${token}` },
+            () => {
+                setStatus(true, "Подключено");
+                stompClient.subscribe(`/topic/${sessionId}`, (message) => {
+                    try {
+                        const payload = JSON.parse(message.body);
+                        appendMessage(payload, payload?.isFromBot !== true);
+                    } catch {
+                        appendMessage({ message: message.body });
+                    }
+                });
+                appendSystem(`Подписка на /topic/${sessionId} активна.`);
+            },
+            () => {
+                setStatus(false, "Ошибка подключения");
+                appendSystem("Ошибка при подключении к WebSocket.");
+            }
+        );
+    };
+
+    const disconnect = () => {
+        if (stompClient) {
+            stompClient.disconnect(() => {
+                setStatus(false, "Отключено");
+                appendSystem("Соединение закрыто.");
+            });
+            stompClient = null;
+        }
+    };
+
+    const sendMessage = () => {
+        if (!stompClient || !stompClient.connected) {
+            appendSystem("Сначала подключитесь к чату.");
+            return;
+        }
+        const sessionId = sessionInput.value.trim();
+        const userId = Number(userInput.value.trim() || 0);
+        const text = document.getElementById("message").value.trim();
+        if (!text) return;
+        const payload = {
+            id: (crypto && crypto.randomUUID) ? crypto.randomUUID() : `msg-${Date.now()}`,
+            sessionId,
+            userId,
+            message: text,
+            isFromBot: false
+        };
+        stompClient.send("/app/chat.sendMessage", {}, JSON.stringify(payload));
+        appendMessage(payload, true);
+        document.getElementById("message").value = "";
+    };
+
+    const requestGreeting = () => {
+        if (!stompClient || !stompClient.connected) {
+            appendSystem("Сначала подключитесь к чату.");
+            return;
+        }
+        const sessionId = sessionInput.value.trim();
+        if (!sessionId) return;
+        stompClient.send("/app/chat.requestGreeting", {}, JSON.stringify({ sessionId }));
+    };
+
+    document.getElementById("saveToken").addEventListener("click", () => {
+        saveToken();
+        fetchProfile();
+    });
+    document.getElementById("clearToken").addEventListener("click", clearToken);
+    document.getElementById("loadProfile").addEventListener("click", fetchProfile);
+    document.getElementById("connect").addEventListener("click", connect);
+    document.getElementById("disconnect").addEventListener("click", disconnect);
+    document.getElementById("send").addEventListener("click", sendMessage);
+    document.getElementById("greeting").addEventListener("click", requestGreeting);
+    document.getElementById("clearChat").addEventListener("click", () => {
+        chatLog.innerHTML = "";
+    });
+
+    loadPersisted();
+    if (tokenInput.value) {
+        fetchProfile();
+    }
+</script>
+</body>
+</html>

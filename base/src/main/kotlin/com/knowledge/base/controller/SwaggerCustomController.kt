@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets
 @RestController
 @RequestMapping("/swagger-ui")
 class SwaggerCustomController {
-
     @GetMapping("/swagger-ui.css", produces = ["text/css"])
     fun getCustomCss(): String {
         // Загружаем оригинальный CSS из webjar
@@ -26,7 +25,7 @@ class SwaggerCustomController {
         return originalCss + "\n\n/* Custom Styles */\n" + customStyles
     }
 
-    @GetMapping("/custom.js", produces = [MediaType.APPLICATION_JSON_VALUE])
+    @GetMapping("/custom.js", produces = ["application/javascript"])
     fun getCustomJs(): String {
         val customJs = ClassPathResource("/static/swagger-ui/custom.js")
         return StreamUtils.copyToString(customJs.inputStream, StandardCharsets.UTF_8)

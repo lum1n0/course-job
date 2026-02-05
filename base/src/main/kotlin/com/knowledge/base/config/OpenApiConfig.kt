@@ -30,12 +30,17 @@ class OpenApiConfig {
                 Info()
                     .title("Pro Znania API")
                     .version("1.0.0")
-                    .description("Документация API для образовательной платформы")
+                    .description(
+                        "Документация API для образовательной платформы.\n\n" +
+                            "Полезные ссылки:\n" +
+                            "- [Демо чата](/demo/chat.html)\n" +
+                            "- [Дашборды](/demo/dashboard.html)"
+                    )
                     .contact(
                         Contact()
                             .name("Команда разработчиков Pro Znania")
                             .email("support@proznania.ru")
-                            .url("https://proznania.ru/contact")
+                            .url("#")
                     )
                     .license(
                         License()
