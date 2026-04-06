@@ -6,6 +6,7 @@ import com.knowledge.base.service.ModerationService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -26,13 +27,6 @@ class ModerationController(
     @Operation(
         summary = "Отправить заявку на создание статьи",
         description = "Создает заявку на создание новой статьи (для WRITER)",
-        requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Данные для создания статьи",
-            required = true,
-            content = [Content(
-                mediaType = "multipart/form-data"
-            )]
-        ),
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -49,10 +43,16 @@ class ModerationController(
     fun submitCreate(
         @Parameter(hidden = true) authentication: Authentication,
         @Parameter(description = "Название статьи", required = true) @RequestParam("title") title: String,
-        @Parameter(description = "Описание статьи в формате JSON", required = true) @RequestParam("description") descriptionJson: String,
+        @Parameter(description = "Описание статьи в формате JSON (Quill Delta)", required = true) @RequestParam("description") descriptionJson: String,
         @Parameter(description = "ID категории", required = true) @RequestParam("categoryId") categoryId: Long,
-        @Parameter(description = "Видео файл", required = false) @RequestParam("videoFile", required = false) videoFile: MultipartFile?,
-        @Parameter(description = "Дополнительные файлы", required = false) @RequestParam("files", required = false) files: List<MultipartFile>?
+        @Parameter(description = "Видео файл (mp4, avi, mov, wmv, max 100MB)", required = false) 
+        @RequestParam("videoFile", required = false) 
+        @Schema(type = "string", format = "binary") 
+        videoFile: MultipartFile?,
+        @Parameter(description = "Дополнительные файлы (pdf, doc, xls и др., max 50MB каждый)", required = false) 
+        @RequestParam("files", required = false) 
+        @ArraySchema(schema = Schema(type = "string", format = "binary"))
+        files: List<MultipartFile>?
     ): ResponseEntity<ArticleProposalDto> {
         val desc = objectMapper.readTree(descriptionJson)
         val dto = moderationService.submitCreate(authentication.name, title, desc, categoryId, videoFile, files)
@@ -62,16 +62,6 @@ class ModerationController(
     @Operation(
         summary = "Отправить заявку на обновление статьи",
         description = "Создает заявку на обновление существующей статьи (для WRITER)",
-        parameters = [
-            Parameter(name = "articleId", description = "ID статьи", required = true, `in` = ParameterIn.PATH)
-        ],
-        requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Данные для обновления статьи",
-            required = true,
-            content = [Content(
-                mediaType = "multipart/form-data"
-            )]
-        ),
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -90,10 +80,16 @@ class ModerationController(
         @Parameter(hidden = true) authentication: Authentication,
         @Parameter(description = "ID статьи", required = true) @PathVariable articleId: Long,
         @Parameter(description = "Новое название статьи", required = true) @RequestParam("title") title: String,
-        @Parameter(description = "Новое описание статьи в формате JSON", required = true) @RequestParam("description") descriptionJson: String,
+        @Parameter(description = "Новое описание статьи в формате JSON (Quill Delta)", required = true) @RequestParam("description") descriptionJson: String,
         @Parameter(description = "Новый ID категории", required = true) @RequestParam("categoryId") categoryId: Long,
-        @Parameter(description = "Видео файл", required = false) @RequestParam("videoFile", required = false) videoFile: MultipartFile?,
-        @Parameter(description = "Дополнительные файлы", required = false) @RequestParam("files", required = false) files: List<MultipartFile>?
+        @Parameter(description = "Видео файл (mp4, avi, mov, wmv, max 100MB)", required = false) 
+        @RequestParam("videoFile", required = false) 
+        @Schema(type = "string", format = "binary") 
+        videoFile: MultipartFile?,
+        @Parameter(description = "Дополнительные файлы (pdf, doc, xls и др., max 50MB каждый)", required = false) 
+        @RequestParam("files", required = false) 
+        @ArraySchema(schema = Schema(type = "string", format = "binary"))
+        files: List<MultipartFile>?
     ): ResponseEntity<ArticleProposalDto> {
         val desc = objectMapper.readTree(descriptionJson)
         val dto = moderationService.submitUpdate(authentication.name, articleId, title, desc, categoryId, videoFile, files)

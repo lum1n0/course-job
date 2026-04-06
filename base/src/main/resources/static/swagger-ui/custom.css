@@ -534,3 +534,67 @@
     border-color: #009AA3;
     box-shadow: 0 0 0 3px rgba(0, 154, 163, 0.1);
 }
+
+/* ========== FILE INPUTS ========== */
+.swagger-ui input[type="file"] {
+    width: 100%;
+    max-width: 420px;
+    padding: 10px;
+    border: 1px dashed rgba(0, 154, 163, 0.45);
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(0, 154, 163, 0.06), rgba(255, 255, 255, 0.96));
+    box-sizing: border-box;
+}
+
+.swagger-ui input[type="file"]::file-selector-button {
+    margin-right: 12px;
+    padding: 8px 14px;
+    border: 0;
+    border-radius: 6px;
+    background: #009AA3;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.swagger-ui input[type="file"]::file-selector-button:hover {
+    background: #007b82;
+}
+
+.swagger-ui .json-schema-array {
+    display: flex;
+    align-items: center;
+}
+
+.swagger-ui .json-schema-array .json-schema-form-item-add {
+    min-width: 170px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid #009AA3;
+    background: rgba(0, 154, 163, 0.08);
+    color: transparent;
+    font-size: 0;
+    position: relative;
+}
+
+.swagger-ui .json-schema-array .json-schema-form-item-add::after {
+    content: "Добавить файл";
+    color: #006c73;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.swagger-ui .parameter__empty_value_toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0;
+    color: transparent;
+}
+
+.swagger-ui .parameter__empty_value_toggle::after {
+    content: "Отправить пустое значение";
+    font-size: 14px;
+    color: #3b4151;
+}

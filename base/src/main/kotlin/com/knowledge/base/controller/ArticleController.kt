@@ -11,6 +11,7 @@ import com.knowledge.base.service.PDFService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
@@ -185,14 +186,6 @@ class ArticleController(
     @Operation(
         summary = "Создать новую статью",
         description = "Создает новую статью с указанными параметрами",
-        requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Данные для создания статьи",
-            required = true,
-            content = [Content(
-                mediaType = "multipart/form-data",
-                schema = Schema(implementation = ArticleDto::class)
-            )]
-        ),
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -209,10 +202,16 @@ class ArticleController(
     fun createArticle(
         authentication: Authentication,
         @Parameter(description = "Название статьи", required = true) @RequestParam("title") title: String,
-        @Parameter(description = "Описание статьи в формате JSON", required = true) @RequestParam("description") descriptionJson: String,
+        @Parameter(description = "Описание статьи в формате JSON (Quill Delta)", required = true) @RequestParam("description") descriptionJson: String,
         @Parameter(description = "ID категории", required = true) @RequestParam("categoryId") categoryId: Long,
-        @Parameter(description = "Видео файл", required = false) @RequestParam("videoFile", required = false) videoFile: MultipartFile?,
-        @Parameter(description = "Дополнительные файлы", required = false) @RequestParam("files", required = false) files: List<MultipartFile>?
+        @Parameter(description = "Видео файл (mp4, avi, mov, wmv, max 100MB)", required = false) 
+        @RequestParam("videoFile", required = false) 
+        @Schema(type = "string", format = "binary") 
+        videoFile: MultipartFile?,
+        @Parameter(description = "Дополнительные файлы (pdf, doc, xls и др., max 50MB каждый)", required = false) 
+        @RequestParam("files", required = false) 
+        @ArraySchema(schema = Schema(type = "string", format = "binary"))
+        files: List<MultipartFile>?
     ): ResponseEntity<ArticleDto> {
         return try {
             val descriptionNode = objectMapper.readTree(descriptionJson)
@@ -237,17 +236,6 @@ class ArticleController(
     @Operation(
         summary = "Обновить статью",
         description = "Обновляет существующую статью с указанными параметрами",
-        parameters = [
-            Parameter(name = "id", description = "ID статьи для обновления", required = true, `in` = ParameterIn.PATH)
-        ],
-        requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Данные для обновления статьи",
-            required = true,
-            content = [Content(
-                mediaType = "multipart/form-data",
-                schema = Schema(implementation = ArticleDto::class)
-            )]
-        ),
         responses = [
             ApiResponse(
                 responseCode = "200",
@@ -266,12 +254,18 @@ class ArticleController(
         authentication: Authentication,
         @Parameter(description = "ID статьи для обновления", required = true) @PathVariable id: Long,
         @Parameter(description = "Новое название статьи", required = true) @RequestParam("title") title: String,
-        @Parameter(description = "Новое описание статьи в формате JSON", required = true) @RequestParam("description") descriptionJson: String,
+        @Parameter(description = "Новое описание статьи в формате JSON (Quill Delta)", required = true) @RequestParam("description") descriptionJson: String,
         @Parameter(description = "Новый ID категории", required = true) @RequestParam("categoryId") categoryId: Long,
-        @Parameter(description = "Новый видео файл", required = false) @RequestParam("videoFile", required = false) videoFile: MultipartFile?,
-        @Parameter(description = "Новые дополнительные файлы", required = false) @RequestParam("files", required = false) files: List<MultipartFile>?,
-        @Parameter(description = "Список файлов для удаления", required = false) @RequestParam("removeFiles", required = false) removeFiles: List<String>?,
-        @Parameter(description = "Удалить видео", required = false) @RequestParam("removeVideo", required = false) removeVideo: Boolean?
+        @Parameter(description = "Новый видео файл (mp4, avi, mov, wmv, max 100MB)", required = false) 
+        @RequestParam("videoFile", required = false) 
+        @Schema(type = "string", format = "binary") 
+        videoFile: MultipartFile?,
+        @Parameter(description = "Новые дополнительные файлы (pdf, doc, xls и др., max 50MB каждый)", required = false) 
+        @RequestParam("files", required = false) 
+        @ArraySchema(schema = Schema(type = "string", format = "binary"))
+        files: List<MultipartFile>?,
+        @Parameter(description = "Список файлов для удаления (пути файлов)", required = false) @RequestParam("removeFiles", required = false) removeFiles: List<String>?,
+        @Parameter(description = "Удалить видео (true/false)", required = false) @RequestParam("removeVideo", required = false) removeVideo: Boolean?
     ): ResponseEntity<ArticleDto> {
         return try {
             val descriptionNode = objectMapper.readTree(descriptionJson)

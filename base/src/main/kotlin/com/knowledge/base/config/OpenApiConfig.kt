@@ -5,6 +5,7 @@ import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.info.Contact
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.info.License
+import io.swagger.v3.oas.models.media.ArraySchema
 import io.swagger.v3.oas.models.media.Content
 import io.swagger.v3.oas.models.media.IntegerSchema
 import io.swagger.v3.oas.models.media.StringSchema
@@ -123,6 +124,30 @@ class OpenApiConfig {
                     .schema(StringSchema().example("id,desc"))
             )
         }
+        operation
+    }
+
+    @Bean
+    fun multipartFileOperationCustomizer(): OperationCustomizer = OperationCustomizer { operation, _ ->
+        val multipartSchema = operation.requestBody
+            ?.content
+            ?.get("multipart/form-data")
+            ?.schema
+
+        multipartSchema?.properties?.let { properties ->
+            if (properties.containsKey("image")) {
+                properties["image"] = StringSchema().format("binary")
+            }
+
+            if (properties.containsKey("videoFile")) {
+                properties["videoFile"] = StringSchema().format("binary")
+            }
+
+            if (properties.containsKey("files")) {
+                properties["files"] = ArraySchema().items(StringSchema().format("binary"))
+            }
+        }
+
         operation
     }
 }

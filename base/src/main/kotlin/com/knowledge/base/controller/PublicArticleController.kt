@@ -5,13 +5,17 @@ import com.knowledge.base.dto.ArticleProposalDto
 import com.knowledge.base.service.ModerationService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
@@ -50,8 +54,14 @@ class PublicArticleController(
         @Parameter(description = "Название статьи", required = true) @RequestParam("title") title: String,
         @Parameter(description = "Описание статьи в формате JSON", required = true) @RequestParam("description") descriptionJson: String,
         @Parameter(description = "ID категории", required = true) @RequestParam("categoryId") categoryId: Long,
-        @Parameter(description = "Видео файл", required = false) @RequestParam("videoFile", required = false) videoFile: MultipartFile?,
-        @Parameter(description = "Дополнительные файлы", required = false) @RequestParam("files", required = false) files: List<MultipartFile>?
+        @Parameter(description = "Видео файл", required = false)
+        @RequestParam("videoFile", required = false)
+        @Schema(type = "string", format = "binary")
+        videoFile: MultipartFile?,
+        @Parameter(description = "Дополнительные файлы", required = false)
+        @RequestParam("files", required = false)
+        @ArraySchema(schema = Schema(type = "string", format = "binary"))
+        files: List<MultipartFile>?
     ): ResponseEntity<ArticleProposalDto> {
         val descriptionNode = objectMapper.readTree(descriptionJson)
         val dto = moderationService.submitPublicCreate(

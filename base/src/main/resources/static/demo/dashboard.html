@@ -345,7 +345,7 @@
         <div class="card kpi">
             <span>Создано категорий (90 дн.)</span>
             <strong id="kpiCategories90">—</strong>
-            <div class="delta" id="kpiCategories90Delta">/api/stats/categories/frequency</div>
+            <div class="delta alert" id="kpiCategories90Delta">Метрика отключена</div>
         </div>
     </section>
 
@@ -392,9 +392,9 @@
                 <div class="list-item">
                     <div>
                         <div>Частота категорий</div>
-                        <div class="footer-note">/api/stats/categories/frequency</div>
+                        <div class="footer-note">Отключено: у категорий нет даты создания</div>
                     </div>
-                    <span class="badge alert">Admin</span>
+                    <span class="badge alert">Off</span>
                 </div>
             </div>
         </div>
@@ -455,6 +455,8 @@
         if (el) el.textContent = value;
     };
 
+    setValue("kpiCategories90", "н/д");
+
     const loadStats = async () => {
         const token = getToken();
         if (!token) {
@@ -490,15 +492,7 @@
                 setValue("kpiArticles90", "Требуется ADMIN");
             }
 
-            const catFreqRes = await fetch("/api/stats/categories/frequency?period=DAY", { headers });
-            if (catFreqRes.ok) {
-                const data = await catFreqRes.json();
-                const points = (data.points || []).map(p => ({ count: Number(p.count || 0) }));
-                const total90 = points.reduce((sum, p) => sum + p.count, 0);
-                setValue("kpiCategories90", total90.toLocaleString("ru-RU"));
-            } else {
-                setValue("kpiCategories90", "Требуется ADMIN");
-            }
+            setValue("kpiCategories90", "н/д");
 
             document.getElementById("lastUpdate").textContent =
                 `Обновлено: ${new Date().toLocaleTimeString()}`;

@@ -1,0 +1,849 @@
+================================================================================
+  KNOWLEDGE BASE - SWAGGER ЗАГОТОВКИ ДЛЯ ТЕСТИРОВАНИЯ API
+  Файл подготовлен для защиты проекта
+================================================================================
+
+================================================================================
+1. АУТЕНТИФИКАЦИЯ (/api/user, /api/auth)
+================================================================================
+
+--- 1.1. ВХОД В СИСТЕМУ (POST /api/user/login) ---
+
+JSON для входа под админом:
+{
+  "email": "admin@gmail.com",
+  "password": "Admin123!"
+}
+
+JSON для входа под обычным пользователем:
+{
+  "email": "user@gmail.com",
+  "password": "User123!"
+}
+
+Описание: Возвращает JWT токен в теле ответа (поле "token") и refresh token в cookie.
+
+
+--- 1.2. ОБНОВЛЕНИЕ ТОКЕНА (POST /api/auth/refresh) ---
+
+Требуется: Cookie с refreshToken
+Описание: Возвращает новый access token
+
+
+--- 1.3. ВЫХОД ИЗ СИСТЕМЫ (POST /api/auth/logout) ---
+
+Требуется: Cookie с refreshToken
+Описание: Отзывает refresh token и очищает cookie
+
+
+================================================================================
+2. ПОЛЬЗОВАТЕЛИ (/api/user) - Требуется ADMIN
+================================================================================
+
+--- 2.1. СОЗДАНИЕ ПОЛЬЗОВАТЕЛЯ (POST /api/user/add) ---
+
+JSON для создания пользователя с ролью ADMIN:
+{
+  "firstName": "Иван",
+  "lastName": "Иванов",
+  "email": "admin2@gmail.com",
+  "password": "Admin123!",
+  "roleDto": {
+    "id": 1,
+    "title": "ADMIN"
+  },
+  "accessRolesDto": [
+    {
+      "id": 1,
+      "title": "USER",
+      "translitTitle": "user"
+    },
+    {
+      "id": 2,
+      "title": "GUEST",
+      "translitTitle": "guest"
+    },
+    {
+      "id": 3,
+      "title": "FULL_ACCESS",
+      "translitTitle": "full_access"
+    }
+  ]
+}
+
+JSON для создания пользователя с ролью MODERATOR:
+{
+  "firstName": "Петр",
+  "lastName": "Петров",
+  "email": "moderator@gmail.com",
+  "password": "Moderator123!",
+  "roleDto": {
+    "id": 2,
+    "title": "MODERATOR"
+  },
+  "accessRolesDto": [
+    {
+      "id": 1,
+      "title": "USER",
+      "translitTitle": "user"
+    }
+  ]
+}
+
+JSON для создания пользователя с ролью WRITER:
+{
+  "firstName": "Сидор",
+  "lastName": "Сидоров",
+  "email": "writer@gmail.com",
+  "password": "Writer123!",
+  "roleDto": {
+    "id": 3,
+    "title": "WRITER"
+  },
+  "accessRolesDto": [
+    {
+      "id": 1,
+      "title": "USER",
+      "translitTitle": "user"
+    }
+  ]
+}
+
+JSON для создания обычного пользователя:
+{
+  "firstName": "Алексей",
+  "lastName": "Алексеев",
+  "email": "user@gmail.com",
+  "password": "User123!",
+  "roleDto": {
+    "id": 4,
+    "title": "USER"
+  },
+  "accessRolesDto": [
+    {
+      "id": 1,
+      "title": "USER",
+      "translitTitle": "user"
+    }
+  ]
+}
+
+
+--- 2.2. ОБНОВЛЕНИЕ ПОЛЬЗОВАТЕЛЯ (PUT /api/user/{id}) ---
+
+JSON для обновления пользователя:
+{
+  "id": 1,
+  "firstName": "Иван",
+  "lastName": "Иванов",
+  "email": "admin@gmail.com",
+  "password": "",
+  "roleDto": {
+    "id": 1,
+    "title": "ADMIN"
+  },
+  "accessRolesDto": [
+    {
+      "id": 1,
+      "title": "USER",
+      "translitTitle": "user"
+    },
+    {
+      "id": 2,
+      "title": "GUEST",
+      "translitTitle": "guest"
+    }
+  ],
+  "isDelete": false,
+  "isFromLdap": false
+}
+
+
+--- 2.3. ПОЛУЧЕНИЕ ТЕКУЩЕГО ПОЛЬЗОВАТЕЛЯ (GET /api/user/me) ---
+
+Требуется: JWT токен в заголовке Authorization: Bearer <token>
+Описание: Возвращает ID текущего пользователя
+
+
+--- 2.4. ФИЛЬТРАЦИЯ ПОЛЬЗОВАТЕЛЕЙ (GET /api/user/all/filter) ---
+
+Query Parameters:
+- lastName (опционально): Иванов
+- email (опционально): admin@gmail.com
+- isFromLdap (опционально): false
+- isDelete (опционально): false
+
+
+================================================================================
+3. КАТЕГОРИИ (/api/category)
+================================================================================
+
+--- 3.1. СОЗДАНИЕ КАТЕГОРИИ (POST /api/category) ---
+
+JSON для создания корневой категории:
+{
+  "id": 0,
+  "description": "База знаний",
+  "iconPath": "assets/icons/knowledge.png",
+  "isDelete": false,
+  "parentId": null,
+  "accessRolesDto": [
+    {
+      "id": 1,
+      "title": "USER",
+      "translitTitle": "user"
+    },
+    {
+      "id": 2,
+      "title": "GUEST",
+      "translitTitle": "guest"
+    }
+  ]
+}
+
+JSON для создания подкатегории:
+{
+  "id": 0,
+  "description": "IT Департамент",
+  "iconPath": "assets/icons/it.png",
+  "isDelete": false,
+  "parentId": 1,
+  "accessRolesDto": [
+    {
+      "id": 1,
+      "title": "USER",
+      "translitTitle": "user"
+    }
+  ]
+}
+
+
+--- 3.2. ОБНОВЛЕНИЕ КАТЕГОРИИ (PUT /api/category/{id}) ---
+
+JSON для обновления категории:
+{
+  "id": 1,
+  "description": "Обновленная база знаний",
+  "iconPath": "assets/icons/knowledge_new.png",
+  "isDelete": false,
+  "parentId": null,
+  "accessRolesDto": [
+    {
+      "id": 1,
+      "title": "USER",
+      "translitTitle": "user"
+    },
+    {
+      "id": 3,
+      "title": "FULL_ACCESS",
+      "translitTitle": "full_access"
+    }
+  ]
+}
+
+
+--- 3.3. ПЕРЕМЕЩЕНИЕ КАТЕГОРИИ (PUT /api/category/{id}/move) ---
+
+Query Parameters:
+- newParentId (опционально): ID новой родительской категории
+  Пример: newParentId=2
+
+
+--- 3.4. МЯГКОЕ УДАЛЕНИЕ КАТЕГОРИИ (PUT /api/category/{id}/soft-delete) ---
+
+Query Parameters:
+- isDelete (опционально, по умолчанию true): true - удалить, false - восстановить
+  Пример: isDelete=true
+
+
+================================================================================
+4. СТАТЬИ (/api/articles)
+================================================================================
+
+--- 4.1. СОЗДАНИЕ СТАТЬИ (POST /api/articles) ---
+
+Content-Type: multipart/form-data
+
+Query/Form Parameters:
+- title (обязательно): Название статьи
+- description (обязательно): JSON-строка с содержимым статьи (формат Quill Delta)
+- categoryId (обязательно): ID категории
+- videoFile (опционально): Видео файл
+- files (опционально): Дополнительные файлы
+
+Пример заполнения полей:
+
+Поле title:
+Руководство по работе с системой
+
+Поле description (JSON в формате Quill Delta):
+{
+  "ops": [
+    {
+      "insert": "Руководство по работе с системой\n\n"
+    },
+    {
+      "insert": "Введение",
+      "attributes": {
+        "bold": true,
+        "header": 2
+      }
+    },
+    {
+      "insert": "\nДанное руководство содержит основную информацию о работе с системой.\n\n"
+    },
+    {
+      "insert": "Основные функции",
+      "attributes": {
+        "bold": true,
+        "header": 2
+      }
+    },
+    {
+      "insert": "\n• Создание статей\n• Редактирование контента\n• Управление категориями\n\n"
+    },
+    {
+      "insert": {
+        "image": "/uploads/images/example.png"
+      }
+    },
+    {
+      "insert": "\n\nДополнительная информация доступна в разделе помощи.\n"
+    }
+  ]
+}
+
+Поле categoryId:
+1
+
+
+--- 4.2. ОБНОВЛЕНИЕ СТАТЬИ (PUT /api/articles/{id}) ---
+
+Content-Type: multipart/form-data
+
+Query/Form Parameters:
+- title (обязательно): Новое название статьи
+- description (обязательно): JSON-строка с новым содержимым
+- categoryId (обязательно): ID категории
+- videoFile (опционально): Новый видео файл
+- files (опционально): Новые дополнительные файлы
+- removeFiles (опционально): Список файлов для удаления
+- removeVideo (опционально): true/false - удалить видео
+
+Пример:
+Поле title: Обновленное руководство
+Поле description: <JSON с обновленным контентом>
+Поле categoryId: 1
+Поле removeVideo: false
+
+
+--- 4.3. МЯГКОЕ УДАЛЕНИЕ СТАТЬИ (PATCH /api/articles/{id}/soft-delete) ---
+
+Query Parameters:
+- isDelete (опционально, по умолчанию true): true - удалить, false - восстановить
+  Пример: isDelete=true
+
+
+--- 4.4. ЖЕСТКОЕ УДАЛЕНИЕ СТАТЬИ (DELETE /api/articles/delete/{id}) ---
+
+Path Parameter:
+- id: ID статьи для удаления
+  Пример: /api/articles/delete/1
+
+
+--- 4.5. ПОЛУЧЕНИЕ СТАТЬИ (GET /api/articles/{id}) ---
+
+Path Parameter:
+- id: ID статьи
+  Пример: /api/articles/1
+
+
+--- 4.6. ПОИСК СТАТЕЙ (GET /api/articles/slidebar/search) ---
+
+Query Parameter:
+- description: Поисковый запрос
+  Пример: /api/articles/slidebar/search?description=руководство
+
+
+--- 4.7. ЗАГРУЗКА ИЗОБРАЖЕНИЯ (POST /api/articles/upload-image) ---
+
+Content-Type: multipart/form-data
+
+Form Parameter:
+- image: Файл изображения (jpg, png, gif, webp, макс. 10MB)
+
+
+--- 4.8. ПОЛУЧЕНИЕ PDF СТАТЬИ (GET /api/articles/{id}/pdf) ---
+
+Path Parameter:
+- id: ID статьи
+  Пример: /api/articles/1/pdf
+
+Возвращает: PDF файл для скачивания
+
+
+================================================================================
+5. МОДЕРАЦИЯ (/api/moderation) - Для WRITER, MODERATOR, ADMIN
+================================================================================
+
+--- 5.1. СОЗДАНИЕ ЗАЯВКИ НА СОЗДАНИЕ СТАТЬИ (POST /api/moderation/submit/create) ---
+
+Content-Type: multipart/form-data
+
+Query/Form Parameters:
+- title (обязательно): Название статьи
+- descriptionJson (обязательно): JSON с содержимым (формат Quill Delta)
+- categoryId (обязательно): ID категории
+- videoFile (опционально): Видео файл
+- files (опционально): Дополнительные файлы
+
+Пример:
+Поле title: Новая статья от Writer
+Поле descriptionJson: {"ops":[{"insert":"Текст статьи\n"}]}
+Поле categoryId: 1
+
+
+--- 5.2. СОЗДАНИЕ ЗАЯВКИ НА ОБНОВЛЕНИЕ СТАТЬИ (POST /api/moderation/submit/update/{articleId}) ---
+
+Path Parameter:
+- articleId: ID существующей статьи
+
+Form Parameters (аналогично созданию):
+- title: Обновленное название
+- descriptionJson: Обновленный контент
+- categoryId: ID категории
+- videoFile: Видео файл
+- files: Дополнительные файлы
+
+
+--- 5.3. ПОЛУЧЕНИЕ ЗАЯВОК НА МОДЕРАЦИЮ (GET /api/moderation/pending) ---
+
+Требуется: Роль MODERATOR или ADMIN
+Описание: Возвращает список заявок со статусом PENDING
+
+
+--- 5.4. ОДОБРЕНИЕ ЗАЯВКИ (POST /api/moderation/proposals/{id}/approve) ---
+
+Path Parameter:
+- id: ID заявки
+
+Query Parameter:
+- comment (опционально): Комментарий модератора
+  Пример: /api/moderation/proposals/1/approve?comment=Одобрено, отличная статья
+
+
+--- 5.5. ОТКЛОНЕНИЕ ЗАЯВКИ (POST /api/moderation/proposals/{id}/reject) ---
+
+Path Parameter:
+- id: ID заявки
+
+Query Parameter:
+- reason (обязательно): Причина отклонения
+  Пример: /api/moderation/proposals/1/reject?reason=Требуется доработка контента
+
+
+--- 5.6. ПОЛУЧЕНИЕ ИСТОРИИ ПРОВЕРЕННЫХ ЗАЯВОК (GET /api/moderation/completed) ---
+
+Требуется: Роль MODERATOR или ADMIN
+Описание: Возвращает список заявок, проверенных текущим модератором
+
+
+================================================================================
+6. ВЕРСИИ СТАТЕЙ (/api/articles/{articleId}/versions)
+================================================================================
+
+--- 6.1. ПОЛУЧЕНИЕ СПИСКА ВЕРСИЙ (GET /api/articles/{articleId}/versions) ---
+
+Path Parameter:
+- articleId: ID статьи
+  Пример: /api/articles/1/versions
+
+
+--- 6.2. ПОЛУЧЕНИЕ КОНКРЕТНОЙ ВЕРСИИ (GET /api/articles/{articleId}/versions/{version}) ---
+
+Path Parameters:
+- articleId: ID статьи
+- version: Номер версии
+  Пример: /api/articles/1/versions/1
+
+
+--- 6.3. СРАВНЕНИЕ ВЕРСИЙ (GET /api/articles/{articleId}/versions/compare) ---
+
+Path Parameter:
+- articleId: ID статьи
+
+Query Parameters:
+- v1: Номер первой версии
+- v2: Номер второй версии
+  Пример: /api/articles/1/versions/compare?v1=1&v2=2
+
+
+--- 6.4. ВОССТАНОВЛЕНИЕ ВЕРСИИ (POST /api/articles/{articleId}/versions/restore) ---
+
+Path Parameter:
+- articleId: ID статьи
+
+Query Parameter:
+- version: Номер версии для восстановления
+  Пример: /api/articles/1/versions/restore?version=1
+
+
+================================================================================
+7. УВЕДОМЛЕНИЯ (/api/notifications)
+================================================================================
+
+--- 7.1. ПОЛУЧЕНИЕ УВЕДОМЛЕНИЙ (GET /api/notifications) ---
+
+Query Parameters:
+- page (опционально): Номер страницы (по умолчанию 0)
+- size (опционально): Размер страницы (по умолчанию 20)
+  Пример: /api/notifications?page=0&size=20
+
+
+--- 7.2. ПОЛУЧЕНИЕ НЕПРОЧИТАННЫХ УВЕДОМЛЕНИЙ (GET /api/notifications/unread) ---
+
+Описание: Возвращает только непрочитанные уведомления
+
+
+--- 7.3. ОТМЕТКА КАК ПРОЧИТАННОЕ (PUT /api/notifications/{id}/read) ---
+
+Path Parameter:
+- id: ID уведомления
+  Пример: /api/notifications/1/read
+
+
+--- 7.4. ОТМЕТКА ВСЕХ КАК ПРОЧИТАННЫЕ (PUT /api/notifications/read-all) ---
+
+Описание: Отмечает все уведомления текущего пользователя как прочитанные
+
+
+--- 7.5. УДАЛЕНИЕ УВЕДОМЛЕНИЯ (DELETE /api/notifications/{id}) ---
+
+Path Parameter:
+- id: ID уведомления
+  Пример: /api/notifications/1
+
+
+--- 7.6. ОТПРАВКА ПОЛЬЗОВАТЕЛЬСКОГО УВЕДОМЛЕНИЯ (POST /api/notifications/send) ---
+
+Требуется: Роль ADMIN или MODERATOR
+
+JSON для отправки по ролям:
+{
+  "type": "CUSTOM_MESSAGE",
+  "title": "Важное сообщение",
+  "message": "Система будет недоступна сегодня в 22:00",
+  "roleIds": [1, 2, 3, 4]
+}
+
+JSON для отправки по AccessRole:
+{
+  "type": "CUSTOM_MESSAGE",
+  "title": "Уведомление для IT",
+  "message": "Обновление серверов запланировано на выходные",
+  "accessRoleIds": [1, 3]
+}
+
+JSON для отправки конкретным пользователям:
+{
+  "type": "CUSTOM_MESSAGE",
+  "title": "Личное сообщение",
+  "message": "Пожалуйста, проверьте ваши настройки",
+  "userIds": [1, 5, 10]
+}
+
+
+================================================================================
+8. ЧАТ (/api/chat)
+================================================================================
+
+--- 8.1. ПОЛУЧЕНИЕ ТЕКУЩЕГО ID СЕССИИ (GET /api/chat/session/current) ---
+
+Требуется: JWT токен
+Описание: Возвращает sessionId из токена
+
+
+--- 8.2. УДАЛЕНИЕ СООБЩЕНИЙ СЕССИИ (DELETE /api/chat/session/{sessionId}) ---
+
+Path Parameter:
+- sessionId: ID сессии чата
+  Пример: /api/chat/session/abc123
+
+
+--- 8.3. WebSocket ПОДКЛЮЧЕНИЕ ---
+
+Endpoint: ws://localhost:8080/ws/chat
+STOMP отправка: /app/chat
+STOMP подписка: /topic/chat/{sessionId}
+
+Формат сообщения:
+{
+  "sessionId": "abc123",
+  "message": "Привет, что такое Spring Boot?"
+}
+
+
+================================================================================
+9. ПУБЛИЧНЫЙ ДОСТУП (/api/guest)
+================================================================================
+
+--- 9.1. ПОЛУЧЕНИЕ ПУБЛИЧНЫХ КАТЕГОРИЙ (GET /api/guest/categories) ---
+
+Описание: Доступно без авторизации
+
+
+--- 9.2. ПОЛУЧЕНИЕ ПУБЛИЧНОЙ СТАТЬИ (GET /api/guest/articles/{id}) ---
+
+Path Parameter:
+- id: ID статьи
+  Пример: /api/guest/articles/1
+
+Описание: Доступно без авторизации для неудаленных статей
+
+
+================================================================================
+10. ПРАВА WRITER (/api/writer-permissions) - ADMIN only
+================================================================================
+
+--- 10.1. ВЫДАЧА ПРАВ (POST /api/writer-permissions/grant) ---
+
+JSON:
+{
+  "userId": 5,
+  "categoryId": 2
+}
+
+
+--- 10.2. ОТЗЫВ ПРАВ (DELETE /api/writer-permissions/revoke) ---
+
+Query Parameters:
+- userId: ID пользователя
+- categoryId: ID категории
+  Пример: /api/writer-permissions/revoke?userId=5&categoryId=2
+
+
+--- 10.3. ПРОВЕРКА ПРАВ НА РЕДАКТИРОВАНИЕ (GET /api/writer-permissions/me/can-edit) ---
+
+Query Parameter:
+- categoryId: ID категории
+  Пример: /api/writer-permissions/me/can-edit?categoryId=2
+
+
+================================================================================
+11. СТАТИСТИКА (/api/stats) - ADMIN only
+================================================================================
+
+--- 11.1. ОБЩИЕ СЧЕТЧИКИ (GET /api/stats/counters) ---
+
+Описание: Возвращает количество статей, категорий, пользователей
+
+
+--- 11.2. ТОП ПОПУЛЯРНЫХ СТАТЕЙ (GET /api/stats/top-articles) ---
+
+Query Parameter:
+- limit (опционально): Количество статей (по умолчанию 10)
+  Пример: /api/stats/top-articles?limit=5
+
+
+--- 11.3. ЧАСТОТА ПРОСМОТРОВ (GET /api/stats/frequency) ---
+
+Описание: Возвращает статистику просмотров по времени
+
+
+================================================================================
+12. ЗАГОТОВКИ QUILL DELTA (JSON для поля description)
+================================================================================
+
+--- 12.1. ПРОСТОЙ ТЕКСТ ---
+{
+  "ops": [
+    {
+      "insert": "Простой текст статьи без форматирования\n"
+    }
+  ]
+}
+
+
+--- 12.2. ТЕКСТ С ФОРМАТИРОВАНИЕМ ---
+{
+  "ops": [
+    {
+      "insert": "Заголовок статьи",
+      "attributes": {
+        "bold": true,
+        "header": 1
+      }
+    },
+    {
+      "insert": "\n\nЭто обычный текст. "
+    },
+    {
+      "insert": "Это жирный текст",
+      "attributes": {
+        "bold": true
+      }
+    },
+    {
+      "insert": ". "
+    },
+    {
+      "insert": "Это курсив",
+      "attributes": {
+        "italic": true
+      }
+    },
+    {
+      "insert": ".\n\n"
+    },
+    {
+      "insert": "• Первый пункт списка\n"
+    },
+    {
+      "insert": "• Второй пункт списка\n"
+    },
+    {
+      "insert": "• Третий пункт списка\n"
+    }
+  ]
+}
+
+
+--- 12.3. ТЕКСТ С ИЗОБРАЖЕНИЕМ ---
+{
+  "ops": [
+    {
+      "insert": "Статья с изображением\n\n"
+    },
+    {
+      "insert": {
+        "image": "/uploads/images/abc123_example.png"
+      }
+    },
+    {
+      "insert": "\n\nОписание изображения выше.\n"
+    }
+  ]
+}
+
+
+--- 12.4. ССЫЛКА ---
+{
+  "ops": [
+    {
+      "insert": "Перейти на сайт",
+      "attributes": {
+        "link": "https://example.com"
+      }
+    },
+    {
+      "insert": "\n"
+    }
+  ]
+}
+
+
+--- 12.5. ЦВЕТНОЙ ТЕКСТ ---
+{
+  "ops": [
+    {
+      "insert": "Красный текст",
+      "attributes": {
+        "color": "#ff0000"
+      }
+    },
+    {
+      "insert": " и "
+    },
+    {
+      "insert": "синий текст",
+      "attributes": {
+        "color": "#0000ff"
+      }
+    },
+    {
+      "insert": "\n"
+    }
+  ]
+}
+
+
+================================================================================
+13. ПОЛЕЗНЫЕ ЗАГОЛОВКИ (Headers)
+================================================================================
+
+Для авторизованных запросов:
+Authorization: Bearer <JWT_TOKEN>
+
+Content-Type для JSON:
+Content-Type: application/json
+
+Content-Type для multipart (файлы):
+Content-Type: multipart/form-data
+
+Accept:
+Accept: application/json
+
+
+================================================================================
+14. ПОДСКАЗКИ ПО РОЛЯМ
+================================================================================
+
+Роли системы (Role):
+- ADMIN (id=1)     - Полный доступ
+- MODERATOR (id=2) - Модерация, управление статьями
+- WRITER (id=3)    - Создание заявок на модерацию
+- USER (id=4)      - Базовый доступ на чтение
+
+Роли доступа (AccessRole):
+- USER (id=1)       - Базовый доступ
+- GUEST (id=2)      - Гостевой доступ
+- FULL_ACCESS (id=3) - Полный доступ ко всем категориям
+
+
+================================================================================
+15. ПОРЯДОК ДЕЙСТВИЙ ДЛЯ ДЕМОНСТРАЦИИ
+================================================================================
+
+1. АВТОРИЗАЦИЯ:
+   POST /api/user/login
+   Body: {"email":"admin@gmail.com","password":"Admin123!"}
+   Сохраняем полученный токен
+
+2. СОЗДАНИЕ КАТЕГОРИИ:
+   POST /api/category
+   Body: <JSON категории>
+   Сохраняем ID созданной категории
+
+3. СОЗДАНИЕ СТАТЬИ:
+   POST /api/articles
+   Form: title, description (Quill Delta JSON), categoryId
+   Сохраняем ID созданной статьи
+
+4. ПОЛУЧЕНИЕ СТАТЬИ:
+   GET /api/articles/{id}
+
+5. СОЗДАНИЕ ВЕРСИИ (обновление):
+   PUT /api/articles/{id}
+   Form: новые данные
+
+6. ПРОСМОТР ВЕРСИЙ:
+   GET /api/articles/{articleId}/versions
+
+7. ПОИСК:
+   GET /api/articles/slidebar/search?description=текст
+
+8. УВЕДОМЛЕНИЯ:
+   GET /api/notifications
+
+9. МОДЕРАЦИЯ (если WRITER создал заявку):
+   GET /api/moderation/pending
+   POST /api/moderation/proposals/{id}/approve
+
+10. СТАТИСТИКА (ADMIN):
+    GET /api/stats/counters
+    GET /api/stats/top-articles
+
+
+================================================================================
+                    УСПЕХОВ НА ЗАЩИТЕ ПРОЕКТА!
+================================================================================
