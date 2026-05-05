@@ -12,7 +12,6 @@ interface ArticleRepository : JpaRepository<Article, Long> {
     fun findAllByIsDeleteFalse(): List<Article>
     fun findAllByCategoryAndIsDeleteFalse(category: Category): List<Article>
     fun findByTitle(title: String): Article?
-    // ДОБАВЬТЕ эти методы
     fun findAllByCategory(category: Category): List<Article>
     fun findByTitleContainingIgnoreCase(title: String): List<Article>
     fun findByTitleContainingIgnoreCaseAndIsDeleteFalse(title: String): List<Article>
